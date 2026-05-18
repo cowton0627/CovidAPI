@@ -1,0 +1,21 @@
+# macOS
+.DS_Store
+
+# Xcode 個人 IDE 狀態
+**/xcuserdata/
+*.xcuserstate
+
+# 建置產物
+build/
+DerivedData/
+*.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/
+
+# Swift Package Manager
+.build/
+.swiftpm/
+
+# CocoaPods（若日後採用）
+Pods/
+
+# Carthage（若日後採用）
+Carthage/Build/
