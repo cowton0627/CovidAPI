@@ -27,14 +27,11 @@ class DetailViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
 
-        
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
-
-        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-        // self.navigationItem.rightBarButtonItem = self.editButtonItem
+        title = epidemic.headline
+        tableView.rowHeight = UITableView.automaticDimension
+        tableView.estimatedRowHeight = 300
+        tableView.separatorStyle = .none
     }
 
     // MARK: - Table view data source
@@ -52,12 +49,29 @@ class DetailViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "detailViewCell", for: indexPath) as! DetailViewCell
-        
-        title = epidemic.headline
-        cell.describeLabel.text = epidemic.description
-        
-        // Configure the cell...
 
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy/MM/dd"
+        let dateString = formatter.string(from: epidemic.effective)
+
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineSpacing = 6
+
+        let attributed = NSMutableAttributedString()
+        attributed.append(NSAttributedString(string: dateString + "\n\n", attributes: [
+            .font: UIFont.systemFont(ofSize: 13),
+            .foregroundColor: UIColor.secondaryLabel,
+            .paragraphStyle: paragraphStyle
+        ]))
+        attributed.append(NSAttributedString(string: epidemic.description, attributes: [
+            .font: UIFont.systemFont(ofSize: 17),
+            .foregroundColor: UIColor.label,
+            .paragraphStyle: paragraphStyle
+        ]))
+
+        cell.describeLabel.attributedText = attributed
+        cell.describeLabel.numberOfLines = 0
+        cell.selectionStyle = .none
         return cell
     }
     

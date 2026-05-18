@@ -42,14 +42,13 @@ class EpidemicTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         getInfo()
-        
-        
-        // Do any additional setup after loading the view.
-        
-        
+
+        tableView.rowHeight = UITableView.automaticDimension
+        tableView.estimatedRowHeight = 80
+
         refreshCon = UIRefreshControl()
         refreshCon.addTarget(self, action: #selector(refresh), for: .valueChanged)
-        tableView.addSubview(refreshCon)
+        tableView.refreshControl = refreshCon
     }
     
     
@@ -90,35 +89,33 @@ class EpidemicTableViewController: UITableViewController {
     
     func getInfo() {
         let urlStr = "https://www.cdc.gov.tw/TravelEpidemic/ExportJSON"
-                
-                if let url = URL(string: urlStr) {
-                    URLSession.shared.dataTask(with: url) { (data, response, erroe) in
-                        let decoder = JSONDecoder()//解碼時間
-                        let formatter = DateFormatter()
-                        formatter.dateFormat = "yyyy/MM/dd"
-                        decoder.dateDecodingStrategy = .iso8601
-                        if let data = data {
-                            do {
-                                let epdemic = try decoder.decode([Epidemic].self, from: data)
-                                self.epidemics = epdemic
-                                DispatchQueue.main.async {
-                                    self.tableView.reloadData()
-                                }
-                            } catch {
-                                print(error)
-                            }
-                        }
-                    }.resume()
-                    
-                }else {
-                    print("Invalid URL.")
+
+        if let url = URL(string: urlStr) {
+            URLSession.shared.dataTask(with: url) { (data, response, error) in
+                let decoder = JSONDecoder()
+                decoder.dateDecodingStrategy = .iso8601
+                if let data = data {
+                    do {
+                        let epdemic = try decoder.decode([Epidemic].self, from: data)
+                        self.epidemics = epdemic
+                    } catch {
+                        print(error)
+                    }
                 }
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                    self.refreshCon?.endRefreshing()
+                }
+            }.resume()
+
+        } else {
+            print("Invalid URL.")
+        }
     }
-    
-    
+
+
     @objc func refresh() {
-        tableView.reloadData()
-        refreshCon.endRefreshing()
+        getInfo()
     }
     
     

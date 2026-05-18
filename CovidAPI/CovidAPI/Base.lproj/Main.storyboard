@@ -16,35 +16,35 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="outBreakCell" rowHeight="101" id="sMS-Wk-wyw" customClass="EpidemicTableViewCell" customModule="CovidAPI" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="24.5" width="414" height="101"/>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="outBreakCell" rowHeight="-1" id="sMS-Wk-wyw" customClass="EpidemicTableViewCell" customModule="CovidAPI" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="24.5" width="414" height="80"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="sMS-Wk-wyw" id="YXa-Hr-Gzm">
-                                    <rect key="frame" x="0.0" y="0.0" width="414" height="101"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="414" height="80"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="titleLabel" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ixk-eD-Oav">
-                                            <rect key="frame" x="0.0" y="20" width="70" height="61"/>
-                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="titleLabel" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ixk-eD-Oav">
+                                            <rect key="frame" x="20" y="14" width="374" height="22"/>
+                                            <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                             <nil key="textColor"/>
                                             <color key="highlightedColor" systemColor="systemBlueColor"/>
                                         </label>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="ourbreakDayLabel" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ccy-wL-TtM">
-                                            <rect key="frame" x="275" y="20" width="139" height="61"/>
-                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                            <nil key="textColor"/>
-                                            <color key="highlightedColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <rect key="frame" x="20" y="44" width="374" height="16"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                            <color key="textColor" systemColor="secondaryLabelColor"/>
+                                            <nil key="highlightedColor"/>
                                         </label>
                                     </subviews>
-                                    <color key="backgroundColor" systemColor="systemGray6Color"/>
+                                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                     <constraints>
-                                        <constraint firstItem="Ixk-eD-Oav" firstAttribute="top" secondItem="YXa-Hr-Gzm" secondAttribute="top" constant="20" id="2GR-ev-IQf"/>
-                                        <constraint firstItem="Ixk-eD-Oav" firstAttribute="leading" secondItem="YXa-Hr-Gzm" secondAttribute="leading" id="CP2-rF-evl"/>
-                                        <constraint firstAttribute="bottom" secondItem="Ixk-eD-Oav" secondAttribute="bottom" constant="20" id="PT1-gE-mlE"/>
-                                        <constraint firstItem="Ccy-wL-TtM" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="Ixk-eD-Oav" secondAttribute="trailing" constant="8" symbolic="YES" id="SaE-iD-e8s"/>
-                                        <constraint firstItem="Ccy-wL-TtM" firstAttribute="top" secondItem="YXa-Hr-Gzm" secondAttribute="top" constant="20" id="Zmf-1M-IbU"/>
-                                        <constraint firstAttribute="bottom" secondItem="Ccy-wL-TtM" secondAttribute="bottom" constant="20" id="pBj-kU-S33"/>
-                                        <constraint firstAttribute="trailing" secondItem="Ccy-wL-TtM" secondAttribute="trailing" id="toJ-1J-LKq"/>
+                                        <constraint firstItem="Ixk-eD-Oav" firstAttribute="top" secondItem="YXa-Hr-Gzm" secondAttribute="top" constant="14" id="2GR-ev-IQf"/>
+                                        <constraint firstItem="Ixk-eD-Oav" firstAttribute="leading" secondItem="YXa-Hr-Gzm" secondAttribute="leading" constant="20" id="CP2-rF-evl"/>
+                                        <constraint firstAttribute="trailing" secondItem="Ixk-eD-Oav" secondAttribute="trailing" constant="20" id="PT1-gE-mlE"/>
+                                        <constraint firstItem="Ccy-wL-TtM" firstAttribute="top" secondItem="Ixk-eD-Oav" secondAttribute="bottom" constant="4" id="SaE-iD-e8s"/>
+                                        <constraint firstItem="Ccy-wL-TtM" firstAttribute="leading" secondItem="YXa-Hr-Gzm" secondAttribute="leading" constant="20" id="Zmf-1M-IbU"/>
+                                        <constraint firstAttribute="bottom" secondItem="Ccy-wL-TtM" secondAttribute="bottom" constant="14" id="pBj-kU-S33"/>
+                                        <constraint firstAttribute="trailing" secondItem="Ccy-wL-TtM" secondAttribute="trailing" constant="20" id="toJ-1J-LKq"/>
                                     </constraints>
                                 </tableViewCellContentView>
                                 <connections>
@@ -71,24 +71,24 @@
         <scene sceneID="OCa-T4-iIc">
             <objects>
                 <tableViewController id="wIP-Zq-Q1P" customClass="DetailViewController" customModule="CovidAPI" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="4RC-gi-Z2F">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="4RC-gi-Z2F">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="detailViewCell" rowHeight="339" id="3ie-q5-0AL" customClass="DetailViewCell" customModule="CovidAPI" customModuleProvider="target">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="detailViewCell" rowHeight="-1" id="3ie-q5-0AL" customClass="DetailViewCell" customModule="CovidAPI" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="24.5" width="414" height="339"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="3ie-q5-0AL" id="erb-pd-IDP">
                                     <rect key="frame" x="0.0" y="0.0" width="414" height="339"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" usesAttributedText="YES" lineBreakMode="tailTruncation" numberOfLines="40" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="f2a-Id-En9">
-                                            <rect key="frame" x="20" y="11" width="374" height="317"/>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" usesAttributedText="YES" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="f2a-Id-En9">
+                                            <rect key="frame" x="20" y="20" width="374" height="299"/>
                                             <attributedString key="attributedText">
                                                 <fragment content="describeLabel">
                                                     <attributes>
-                                                        <font key="NSFont" metaFont="system" size="19"/>
+                                                        <font key="NSFont" metaFont="system" size="17"/>
                                                         <paragraphStyle key="NSParagraphStyle" alignment="natural" lineBreakMode="wordWrapping" baseWritingDirection="natural" lineSpacing="6" tighteningFactorForTruncation="0.0"/>
                                                     </attributes>
                                                 </fragment>
@@ -97,10 +97,10 @@
                                         </label>
                                     </subviews>
                                     <constraints>
-                                        <constraint firstItem="f2a-Id-En9" firstAttribute="leading" secondItem="erb-pd-IDP" secondAttribute="leadingMargin" id="I0Y-7m-frk"/>
-                                        <constraint firstItem="f2a-Id-En9" firstAttribute="top" secondItem="erb-pd-IDP" secondAttribute="topMargin" id="aF8-RL-mik"/>
-                                        <constraint firstItem="f2a-Id-En9" firstAttribute="trailing" secondItem="erb-pd-IDP" secondAttribute="trailingMargin" id="h5E-e5-ac4"/>
-                                        <constraint firstItem="f2a-Id-En9" firstAttribute="bottom" secondItem="erb-pd-IDP" secondAttribute="bottomMargin" id="u4L-Mo-PCi"/>
+                                        <constraint firstItem="f2a-Id-En9" firstAttribute="leading" secondItem="erb-pd-IDP" secondAttribute="leading" constant="20" id="I0Y-7m-frk"/>
+                                        <constraint firstItem="f2a-Id-En9" firstAttribute="top" secondItem="erb-pd-IDP" secondAttribute="top" constant="20" id="aF8-RL-mik"/>
+                                        <constraint firstAttribute="trailing" secondItem="f2a-Id-En9" secondAttribute="trailing" constant="20" id="h5E-e5-ac4"/>
+                                        <constraint firstAttribute="bottom" secondItem="f2a-Id-En9" secondAttribute="bottom" constant="20" id="u4L-Mo-PCi"/>
                                     </constraints>
                                 </tableViewCellContentView>
                                 <connections>
@@ -143,8 +143,8 @@
         <systemColor name="systemBlueColor">
             <color red="0.0" green="0.47843137254901963" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
-        <systemColor name="systemGray6Color">
-            <color red="0.94901960784313721" green="0.94901960784313721" blue="0.96862745098039216" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        <systemColor name="secondaryLabelColor">
+            <color red="0.23529411764705882" green="0.23529411764705882" blue="0.2627450980392157" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>
