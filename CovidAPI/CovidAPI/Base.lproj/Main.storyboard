@@ -38,12 +38,12 @@
                                     </subviews>
                                     <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                     <constraints>
-                                        <constraint firstItem="Ixk-eD-Oav" firstAttribute="top" secondItem="YXa-Hr-Gzm" secondAttribute="top" constant="14" id="2GR-ev-IQf"/>
+                                        <constraint firstItem="Ixk-eD-Oav" firstAttribute="top" secondItem="YXa-Hr-Gzm" secondAttribute="top" constant="16" id="2GR-ev-IQf"/>
                                         <constraint firstItem="Ixk-eD-Oav" firstAttribute="leading" secondItem="YXa-Hr-Gzm" secondAttribute="leading" constant="20" id="CP2-rF-evl"/>
                                         <constraint firstAttribute="trailing" secondItem="Ixk-eD-Oav" secondAttribute="trailing" constant="20" id="PT1-gE-mlE"/>
-                                        <constraint firstItem="Ccy-wL-TtM" firstAttribute="top" secondItem="Ixk-eD-Oav" secondAttribute="bottom" constant="4" id="SaE-iD-e8s"/>
+                                        <constraint firstItem="Ccy-wL-TtM" firstAttribute="top" secondItem="Ixk-eD-Oav" secondAttribute="bottom" constant="6" id="SaE-iD-e8s"/>
                                         <constraint firstItem="Ccy-wL-TtM" firstAttribute="leading" secondItem="YXa-Hr-Gzm" secondAttribute="leading" constant="20" id="Zmf-1M-IbU"/>
-                                        <constraint firstAttribute="bottom" secondItem="Ccy-wL-TtM" secondAttribute="bottom" constant="14" id="pBj-kU-S33"/>
+                                        <constraint firstAttribute="bottom" secondItem="Ccy-wL-TtM" secondAttribute="bottom" constant="16" id="pBj-kU-S33"/>
                                         <constraint firstAttribute="trailing" secondItem="Ccy-wL-TtM" secondAttribute="trailing" constant="20" id="toJ-1J-LKq"/>
                                     </constraints>
                                 </tableViewCellContentView>
@@ -97,10 +97,10 @@
                                         </label>
                                     </subviews>
                                     <constraints>
-                                        <constraint firstItem="f2a-Id-En9" firstAttribute="leading" secondItem="erb-pd-IDP" secondAttribute="leading" constant="20" id="I0Y-7m-frk"/>
-                                        <constraint firstItem="f2a-Id-En9" firstAttribute="top" secondItem="erb-pd-IDP" secondAttribute="top" constant="20" id="aF8-RL-mik"/>
-                                        <constraint firstAttribute="trailing" secondItem="f2a-Id-En9" secondAttribute="trailing" constant="20" id="h5E-e5-ac4"/>
-                                        <constraint firstAttribute="bottom" secondItem="f2a-Id-En9" secondAttribute="bottom" constant="20" id="u4L-Mo-PCi"/>
+                                        <constraint firstItem="f2a-Id-En9" firstAttribute="leading" secondItem="erb-pd-IDP" secondAttribute="leading" constant="24" id="I0Y-7m-frk"/>
+                                        <constraint firstItem="f2a-Id-En9" firstAttribute="top" secondItem="erb-pd-IDP" secondAttribute="top" constant="24" id="aF8-RL-mik"/>
+                                        <constraint firstAttribute="trailing" secondItem="f2a-Id-En9" secondAttribute="trailing" constant="24" id="h5E-e5-ac4"/>
+                                        <constraint firstAttribute="bottom" secondItem="f2a-Id-En9" secondAttribute="bottom" constant="24" id="u4L-Mo-PCi"/>
                                     </constraints>
                                 </tableViewCellContentView>
                                 <connections>

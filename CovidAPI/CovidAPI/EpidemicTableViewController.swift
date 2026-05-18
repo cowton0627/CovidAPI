@@ -43,8 +43,11 @@ class EpidemicTableViewController: UITableViewController {
         super.viewDidLoad()
         getInfo()
 
+        navigationController?.navigationBar.prefersLargeTitles = true
+        navigationItem.largeTitleDisplayMode = .always
+
         tableView.rowHeight = UITableView.automaticDimension
-        tableView.estimatedRowHeight = 80
+        tableView.estimatedRowHeight = 88
 
         refreshCon = UIRefreshControl()
         refreshCon.addTarget(self, action: #selector(refresh), for: .valueChanged)
@@ -63,17 +66,33 @@ class EpidemicTableViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "outBreakCell", for: indexPath) as! EpidemicTableViewCell
-            let epidemic = epidemics[indexPath.row]
-            cell.titleLabel.text = epidemic.headline
-            
-            //顯示時間
-            let formatter = DateFormatter()
-            formatter.dateFormat = "yyyy/MM/dd"
-            let dateStr = formatter.string(from: epidemic.effective)
-            cell.ourbreakDayLabel.text = dateStr
-            return cell
-        }
+        let cell = tableView.dequeueReusableCell(withIdentifier: "outBreakCell", for: indexPath) as! EpidemicTableViewCell
+        let epidemic = epidemics[indexPath.row]
+
+        let symbolConfig = UIImage.SymbolConfiguration(textStyle: .headline)
+        let icon = UIImage(systemName: "exclamationmark.triangle.fill", withConfiguration: symbolConfig)?
+            .withTintColor(.systemOrange, renderingMode: .alwaysOriginal)
+        let attachment = NSTextAttachment()
+        attachment.image = icon
+        let titleText = NSMutableAttributedString(attachment: attachment)
+        titleText.append(NSAttributedString(string: "  \(epidemic.headline)"))
+        titleText.addAttribute(
+            .font,
+            value: UIFont.preferredFont(forTextStyle: .headline),
+            range: NSRange(location: 0, length: titleText.length)
+        )
+        cell.titleLabel.attributedText = titleText
+        cell.titleLabel.adjustsFontForContentSizeCategory = true
+
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy/MM/dd"
+        cell.ourbreakDayLabel.text = formatter.string(from: epidemic.effective)
+        cell.ourbreakDayLabel.font = .preferredFont(forTextStyle: .subheadline)
+        cell.ourbreakDayLabel.adjustsFontForContentSizeCategory = true
+
+        cell.accessoryType = .disclosureIndicator
+        return cell
+    }
     
     
     /*

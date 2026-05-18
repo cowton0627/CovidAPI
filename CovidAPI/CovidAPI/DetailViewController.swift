@@ -29,6 +29,7 @@ class DetailViewController: UITableViewController {
         super.viewDidLoad()
 
         title = epidemic.headline
+        navigationItem.largeTitleDisplayMode = .never
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 300
         tableView.separatorStyle = .none
@@ -55,22 +56,23 @@ class DetailViewController: UITableViewController {
         let dateString = formatter.string(from: epidemic.effective)
 
         let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.lineSpacing = 6
+        paragraphStyle.lineSpacing = 8
 
         let attributed = NSMutableAttributedString()
         attributed.append(NSAttributedString(string: dateString + "\n\n", attributes: [
-            .font: UIFont.systemFont(ofSize: 13),
+            .font: UIFont.preferredFont(forTextStyle: .footnote),
             .foregroundColor: UIColor.secondaryLabel,
             .paragraphStyle: paragraphStyle
         ]))
         attributed.append(NSAttributedString(string: epidemic.description, attributes: [
-            .font: UIFont.systemFont(ofSize: 17),
+            .font: UIFont.preferredFont(forTextStyle: .body),
             .foregroundColor: UIColor.label,
             .paragraphStyle: paragraphStyle
         ]))
 
         cell.describeLabel.attributedText = attributed
         cell.describeLabel.numberOfLines = 0
+        cell.describeLabel.adjustsFontForContentSizeCategory = true
         cell.selectionStyle = .none
         return cell
     }
