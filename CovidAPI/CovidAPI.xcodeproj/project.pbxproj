@@ -15,6 +15,7 @@
 		29044FDC2664580F00D044D5 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 29044FDA2664580F00D044D5 /* LaunchScreen.storyboard */; };
 		29044FE42664597600D044D5 /* EpidemicTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29044FE32664597600D044D5 /* EpidemicTableViewController.swift */; };
 		2904500C26673A8A00D044D5 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2904500B26673A8A00D044D5 /* DetailViewController.swift */; };
+		2904501F26800F0100D044D5 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2904502026800F0200D044D5 /* MapViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +29,7 @@
 		29044FDD2664580F00D044D5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		29044FE32664597600D044D5 /* EpidemicTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpidemicTableViewController.swift; sourceTree = "<group>"; };
 		2904500B26673A8A00D044D5 /* DetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
+		2904502026800F0200D044D5 /* MapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -65,6 +67,7 @@
 				29044FD32664580800D044D5 /* ViewController.swift */,
 				29044FE32664597600D044D5 /* EpidemicTableViewController.swift */,
 				2904500B26673A8A00D044D5 /* DetailViewController.swift */,
+				2904502026800F0200D044D5 /* MapViewController.swift */,
 				29044FD52664580800D044D5 /* Main.storyboard */,
 				29044FD82664580F00D044D5 /* Assets.xcassets */,
 				29044FDA2664580F00D044D5 /* LaunchScreen.storyboard */,
@@ -146,6 +149,7 @@
 				29044FD42664580800D044D5 /* ViewController.swift in Sources */,
 				29044FE42664597600D044D5 /* EpidemicTableViewController.swift in Sources */,
 				2904500C26673A8A00D044D5 /* DetailViewController.swift in Sources */,
+				2904501F26800F0100D044D5 /* MapViewController.swift in Sources */,
 				29044FD02664580800D044D5 /* AppDelegate.swift in Sources */,
 				29044FD22664580800D044D5 /* SceneDelegate.swift in Sources */,
 			);
