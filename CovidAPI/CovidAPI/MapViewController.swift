@@ -28,8 +28,11 @@ class MapViewController: UIViewController {
     let mapView = MKMapView()
     let locationManager = CLLocationManager()
     private let repository = EpidemicRepository.shared
+    private let coordinateCache: CoordinateCacheProtocol = CoordinateCache()
+    private let geocoder = CLGeocoder()
     var epidemics: [Epidemic] = []
     private var hasCenteredOnUser = false
+    private var geocodingGeneration = 0
     private let statusLabel = UILabel()
 
     override func loadView() {
@@ -88,11 +91,13 @@ class MapViewController: UIViewController {
     }
 
     private func show(_ snapshot: EpidemicSnapshot) {
+        geocodingGeneration += 1
+        geocoder.cancelGeocode()
         let annotations = mapView.annotations.filter { $0 is EpidemicAnnotation }
         mapView.removeAnnotations(annotations)
         epidemics = snapshot.epidemics
         statusLabel.isHidden = true
-        geocodeNext(index: 0)
+        geocodeNext(index: 0, generation: geocodingGeneration)
     }
 
     private func configureStatusLabel() {
@@ -113,20 +118,31 @@ class MapViewController: UIViewController {
         ])
     }
 
-    private func geocodeNext(index: Int) {
-        guard index < epidemics.count else { return }
+    private func geocodeNext(index: Int, generation: Int) {
+        guard generation == geocodingGeneration, index < epidemics.count else { return }
         let epidemic = epidemics[index]
+        let locationName = LocationNameNormalizer.normalize(epidemic.headline)
 
-        CLGeocoder().geocodeAddressString(epidemic.headline) { [weak self] (placemarks, _) in
-            guard let self = self else { return }
+        if let coordinate = coordinateCache.coordinate(for: locationName) {
+            addAnnotation(for: epidemic, coordinate: coordinate)
+            geocodeNext(index: index + 1, generation: generation)
+            return
+        }
+
+        geocoder.geocodeAddressString(locationName) { [weak self] placemarks, _ in
+            guard let self = self, generation == self.geocodingGeneration else { return }
             if let coord = placemarks?.first?.location?.coordinate {
-                let annotation = EpidemicAnnotation(epidemic: epidemic, coordinate: coord)
-                self.mapView.addAnnotation(annotation)
+                self.coordinateCache.save(coord, for: locationName)
+                self.addAnnotation(for: epidemic, coordinate: coord)
             }
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                self.geocodeNext(index: index + 1)
+                self.geocodeNext(index: index + 1, generation: generation)
             }
         }
+    }
+
+    private func addAnnotation(for epidemic: Epidemic, coordinate: CLLocationCoordinate2D) {
+        mapView.addAnnotation(EpidemicAnnotation(epidemic: epidemic, coordinate: coordinate))
     }
 
     private func makeCalloutDetailView(for ann: EpidemicAnnotation) -> UIView {

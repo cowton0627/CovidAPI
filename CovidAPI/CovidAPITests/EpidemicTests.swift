@@ -1,4 +1,5 @@
 import XCTest
+import CoreLocation
 @testable import CovidAPI
 
 final class EpidemicTests: XCTestCase {
@@ -113,6 +114,26 @@ final class EpidemicTests: XCTestCase {
         viewModel.setSearchQuery("")
         viewModel.setFilter(.warning)
         XCTAssertEqual(viewModel.visibleEpidemics, [warning])
+    }
+
+    func testLocationNameNormalizerUsesKnownAliasAndRemovesAlertText() {
+        XCTAssertEqual(LocationNameNormalizer.normalize("中國大陸第三級旅遊疫情警告"), "中國")
+        XCTAssertEqual(LocationNameNormalizer.normalize("日本－第二級警示：登革熱"), "日本")
+    }
+
+    func testCoordinateCachePersistsCoordinates() {
+        let suiteName = "CoordinateCacheTests.\(UUID().uuidString)"
+        guard let defaults = UserDefaults(suiteName: suiteName) else {
+            return XCTFail("Unable to create isolated UserDefaults")
+        }
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+
+        let expected = CLLocationCoordinate2D(latitude: 35.6762, longitude: 139.6503)
+        CoordinateCache(defaults: defaults).save(expected, for: "日本")
+        let loaded = CoordinateCache(defaults: defaults).coordinate(for: "日本")
+
+        XCTAssertEqual(loaded?.latitude, expected.latitude)
+        XCTAssertEqual(loaded?.longitude, expected.longitude)
     }
 
     private func makeEpidemic(headline: String) -> Epidemic {

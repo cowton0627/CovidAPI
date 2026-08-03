@@ -89,7 +89,7 @@ xcodebuild test \
 - [x] 離線快取與最後更新時間
 - [x] 搜尋與警示等級篩選
 - [x] 單元測試與 CI
-- [ ] 國家名稱正規化與座標快取
+- [x] 國家名稱正規化與座標快取
 - [ ] 地圖 marker clustering
 - [ ] 收藏地區與警示通知
 - [ ] UI tests 與 VoiceOver accessibility audit
