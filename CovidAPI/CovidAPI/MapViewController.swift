@@ -185,6 +185,18 @@ class MapViewController: UIViewController {
 extension MapViewController: MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         if annotation is MKUserLocation { return nil }
+        if let cluster = annotation as? MKClusterAnnotation {
+            let id = "EpidemicCluster"
+            let view = (mapView.dequeueReusableAnnotationView(withIdentifier: id) as? MKMarkerAnnotationView)
+                ?? MKMarkerAnnotationView(annotation: cluster, reuseIdentifier: id)
+            view.annotation = cluster
+            view.markerTintColor = .systemIndigo
+            view.glyphText = String(cluster.memberAnnotations.count)
+            view.titleVisibility = .hidden
+            view.subtitleVisibility = .hidden
+            view.accessibilityLabel = "疫情警告群組，共 \(cluster.memberAnnotations.count) 筆"
+            return view
+        }
         guard let epAnn = annotation as? EpidemicAnnotation else { return nil }
         let id = "EpidemicMarker"
         let view: MKMarkerAnnotationView
@@ -196,6 +208,8 @@ extension MapViewController: MKMapViewDelegate {
         }
         view.markerTintColor = epAnn.alertLevel.color
         view.glyphText = epAnn.alertLevel.glyphText
+        view.clusteringIdentifier = "epidemic"
+        view.displayPriority = .defaultHigh
         view.canShowCallout = true
         view.detailCalloutAccessoryView = makeCalloutDetailView(for: epAnn)
         view.rightCalloutAccessoryView = UIButton(type: .detailDisclosure)

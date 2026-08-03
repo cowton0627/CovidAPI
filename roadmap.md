@@ -18,6 +18,7 @@
 - 更新 README 的架構、測試、簽章設定與功能說明。
 - 地圖 geocoding 改用正規化地名，並以 UserDefaults 持久化座標，重新載入時可直接建立 marker。
 - 地圖資料刷新會取消舊 geocoding 批次，避免過期或重複 marker 混入。
+- 鄰近地圖 marker 會自動聚合，群組 marker 顯示包含的疫情筆數。
 
 ## 驗證結果
 
@@ -44,5 +45,4 @@
 
 1. 人工完成搜尋、篩選、詳細頁、地圖 marker／callout 與離線模式操作檢查。
 2. 推送 `main`，確認 GitHub Actions 通過。
-3. 加入地圖 marker clustering。
-4. 補充 UI tests 與 VoiceOver accessibility audit。
+3. 補充 UI tests 與 VoiceOver accessibility audit。
