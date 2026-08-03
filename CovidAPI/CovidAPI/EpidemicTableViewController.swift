@@ -6,13 +6,6 @@
 
 import UIKit
 
-struct Epidemic: Codable {
-    var headline: String
-    var effective: Date
-    var description: String
-}
-
-
 class EpidemicTableViewCell: UITableViewCell {
 
     @IBOutlet weak var titleLabel: UILabel!
@@ -22,36 +15,46 @@ class EpidemicTableViewCell: UITableViewCell {
 
 
 class EpidemicTableViewController: UITableViewController {
-    var epidemics: [Epidemic] = []
-    
-    var refreshCon: UIRefreshControl!
-
-
-
+    private let viewModel = EpidemicListViewModel()
+    private let searchController = UISearchController(searchResultsController: nil)
+    private let filterControl = UISegmentedControl(items: AlertFilter.allCases.map(\.title))
    
     @IBSegueAction func showDetail(_ coder: NSCoder) -> DetailViewController? {
         let controller =  DetailViewController(coder: coder)
-              if let row = tableView.indexPathForSelectedRow?.row {
-                  controller?.epidemic = epidemics[row]
-                  
-              }
-              return controller
+        if let row = tableView.indexPathForSelectedRow?.row {
+            controller?.epidemic = viewModel.visibleEpidemics[row]
+        }
+        return controller
     }
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        getInfo()
-
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.largeTitleDisplayMode = .always
 
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 88
 
-        refreshCon = UIRefreshControl()
-        refreshCon.addTarget(self, action: #selector(refresh), for: .valueChanged)
-        tableView.refreshControl = refreshCon
+        refreshControl = UIRefreshControl()
+        refreshControl?.addTarget(self, action: #selector(refresh), for: .valueChanged)
+
+        searchController.searchResultsUpdater = self
+        searchController.obscuresBackgroundDuringPresentation = false
+        searchController.searchBar.placeholder = "搜尋國家、地區或疾病"
+        navigationItem.searchController = searchController
+        navigationItem.hidesSearchBarWhenScrolling = false
+        definesPresentationContext = true
+
+        filterControl.selectedSegmentIndex = AlertFilter.all.rawValue
+        filterControl.addTarget(self, action: #selector(filterChanged), for: .valueChanged)
+        filterControl.selectedSegmentTintColor = .systemOrange
+        navigationItem.titleView = filterControl
+
+        viewModel.onChange = { [weak self] in
+            self?.render()
+        }
+        viewModel.load()
     }
     
     
@@ -62,12 +65,12 @@ class EpidemicTableViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        return epidemics.count
+        return viewModel.visibleEpidemics.count
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "outBreakCell", for: indexPath) as! EpidemicTableViewCell
-        let epidemic = epidemics[indexPath.row]
+        let epidemic = viewModel.visibleEpidemics[indexPath.row]
 
         let symbolConfig = UIImage.SymbolConfiguration(textStyle: .headline)
         let icon = UIImage(systemName: "exclamationmark.triangle.fill", withConfiguration: symbolConfig)?
@@ -106,37 +109,135 @@ class EpidemicTableViewController: UITableViewController {
     */
 
     
-    func getInfo() {
-        let urlStr = "https://www.cdc.gov.tw/TravelEpidemic/ExportJSON"
+    @objc func refresh() {
+        viewModel.refresh()
+    }
 
-        if let url = URL(string: urlStr) {
-            URLSession.shared.dataTask(with: url) { (data, response, error) in
-                let decoder = JSONDecoder()
-                decoder.dateDecodingStrategy = .iso8601
-                if let data = data {
-                    do {
-                        let epdemic = try decoder.decode([Epidemic].self, from: data)
-                        self.epidemics = epdemic
-                    } catch {
-                        print(error)
-                    }
-                }
-                DispatchQueue.main.async {
-                    self.tableView.reloadData()
-                    self.refreshCon?.endRefreshing()
-                }
-            }.resume()
+    @objc private func filterChanged() {
+        guard let filter = AlertFilter(rawValue: filterControl.selectedSegmentIndex) else { return }
+        viewModel.setFilter(filter)
+    }
 
-        } else {
-            print("Invalid URL.")
+    private func render() {
+        refreshControl?.endRefreshing()
+        tableView.reloadData()
+
+        switch viewModel.state {
+        case .loading:
+            tableView.backgroundView = makeStateView(
+                title: "正在取得旅遊疫情資訊",
+                message: "請稍候…",
+                showActivity: true
+            )
+        case .loaded:
+            tableView.backgroundView = nil
+            tableView.tableFooterView = makeUpdatedFooter()
+        case .empty:
+            tableView.backgroundView = makeStateView(
+                title: "沒有符合條件的資料",
+                message: "請嘗試其他關鍵字或警示等級。"
+            )
+        case .failed(let message):
+            tableView.backgroundView = makeStateView(
+                title: "無法載入資料",
+                message: message,
+                retryAction: { [weak self] in self?.viewModel.refresh() }
+            )
         }
     }
 
+    private func makeUpdatedFooter() -> UIView? {
+        guard let updatedAt = viewModel.updatedAt else { return nil }
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "zh_Hant_TW")
+        formatter.dateFormat = "yyyy/MM/dd HH:mm"
 
-    @objc func refresh() {
-        getInfo()
+        let label = UILabel()
+        let source = viewModel.isShowingCachedData ? "離線資料" : "疾管署資料"
+        label.text = "\(source)・更新於 \(formatter.string(from: updatedAt))"
+        label.font = .preferredFont(forTextStyle: .caption1)
+        label.textColor = .secondaryLabel
+        label.textAlignment = .center
+        label.frame.size.height = 44
+        label.adjustsFontForContentSizeCategory = true
+        return label
+    }
+
+    private func makeStateView(
+        title: String,
+        message: String,
+        showActivity: Bool = false,
+        retryAction: (() -> Void)? = nil
+    ) -> UIView {
+        let container = UIView()
+        let stack = UIStackView()
+        stack.axis = .vertical
+        stack.alignment = .center
+        stack.spacing = 12
+        stack.translatesAutoresizingMaskIntoConstraints = false
+
+        if showActivity {
+            let indicator = UIActivityIndicatorView(style: .medium)
+            indicator.startAnimating()
+            stack.addArrangedSubview(indicator)
+        }
+
+        let titleLabel = UILabel()
+        titleLabel.text = title
+        titleLabel.font = .preferredFont(forTextStyle: .headline)
+        titleLabel.adjustsFontForContentSizeCategory = true
+        stack.addArrangedSubview(titleLabel)
+
+        let messageLabel = UILabel()
+        messageLabel.text = message
+        messageLabel.font = .preferredFont(forTextStyle: .subheadline)
+        messageLabel.textColor = .secondaryLabel
+        messageLabel.textAlignment = .center
+        messageLabel.numberOfLines = 0
+        messageLabel.adjustsFontForContentSizeCategory = true
+        stack.addArrangedSubview(messageLabel)
+
+        if let retryAction = retryAction {
+            let button = RetryButton(type: .system)
+            button.setTitle("重試", for: .normal)
+            button.titleLabel?.font = .preferredFont(forTextStyle: .headline)
+            button.action = retryAction
+            stack.addArrangedSubview(button)
+        }
+
+        container.addSubview(stack)
+        NSLayoutConstraint.activate([
+            stack.centerXAnchor.constraint(equalTo: container.centerXAnchor),
+            stack.centerYAnchor.constraint(equalTo: container.centerYAnchor),
+            stack.leadingAnchor.constraint(greaterThanOrEqualTo: container.leadingAnchor, constant: 24),
+            stack.trailingAnchor.constraint(lessThanOrEqualTo: container.trailingAnchor, constant: -24)
+        ])
+        return container
     }
     
     
 }
 
+extension EpidemicTableViewController: UISearchResultsUpdating {
+    func updateSearchResults(for searchController: UISearchController) {
+        viewModel.setSearchQuery(searchController.searchBar.text ?? "")
+    }
+}
+
+private final class RetryButton: UIButton {
+    var action: (() -> Void)?
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        addTarget(self, action: #selector(tapped), for: .touchUpInside)
+    }
+
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        addTarget(self, action: #selector(tapped), for: .touchUpInside)
+    }
+
+    @objc private func tapped() {
+        action?()
+    }
+}

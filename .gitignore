@@ -19,3 +19,5 @@ Pods/
 
 # Carthage（若日後採用）
 Carthage/Build/
+# Developer-specific Apple code signing
+CovidAPI/Config/Signing.local.xcconfig

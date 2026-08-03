@@ -1,0 +1,4 @@
+// Shared signing configuration. Keep developer-specific values in the ignored
+// Signing.local.xcconfig file.
+DEVELOPMENT_TEAM =
+#include? "Signing.local.xcconfig"

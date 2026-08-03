@@ -7,54 +7,6 @@ import UIKit
 import MapKit
 import CoreLocation
 
-enum AlertLevel {
-    case watch    // 第一級 注意
-    case alert    // 第二級 警示
-    case warning  // 第三級 警告
-    case unknown
-
-    static func from(epidemic: Epidemic) -> AlertLevel {
-        let text = epidemic.headline + epidemic.description
-        if text.contains("第三級") || text.contains("警告") {
-            return .warning
-        }
-        if text.contains("第二級") || text.contains("警示") {
-            return .alert
-        }
-        if text.contains("第一級") || text.contains("注意") {
-            return .watch
-        }
-        return .unknown
-    }
-
-    var color: UIColor {
-        switch self {
-        case .watch:   return .systemYellow
-        case .alert:   return .systemOrange
-        case .warning: return .systemRed
-        case .unknown: return .systemGray
-        }
-    }
-
-    var glyphText: String {
-        switch self {
-        case .watch:   return "1"
-        case .alert:   return "2"
-        case .warning: return "3"
-        case .unknown: return "?"
-        }
-    }
-
-    var label: String {
-        switch self {
-        case .watch:   return "第一級 注意"
-        case .alert:   return "第二級 警示"
-        case .warning: return "第三級 警告"
-        case .unknown: return "未分類"
-        }
-    }
-}
-
 class EpidemicAnnotation: NSObject, MKAnnotation {
     let epidemic: Epidemic
     let coordinate: CLLocationCoordinate2D
@@ -75,8 +27,10 @@ class MapViewController: UIViewController {
 
     let mapView = MKMapView()
     let locationManager = CLLocationManager()
+    private let repository = EpidemicRepository.shared
     var epidemics: [Epidemic] = []
     private var hasCenteredOnUser = false
+    private let statusLabel = UILabel()
 
     override func loadView() {
         view = mapView
@@ -105,29 +59,58 @@ class MapViewController: UIViewController {
         locationManager.delegate = self
         locationManager.requestWhenInUseAuthorization()
 
-        getInfo()
+        configureStatusLabel()
+        loadData()
     }
 
     @objc func reload() {
         let epidemicAnnotations = mapView.annotations.filter { $0 is EpidemicAnnotation }
         mapView.removeAnnotations(epidemicAnnotations)
-        getInfo()
+        loadData(forceRefresh: true)
     }
 
-    func getInfo() {
-        let urlStr = "https://www.cdc.gov.tw/TravelEpidemic/ExportJSON"
-        guard let url = URL(string: urlStr) else { return }
+    private func loadData(forceRefresh: Bool = false) {
+        statusLabel.text = "正在載入地圖資料…"
+        statusLabel.isHidden = false
 
-        URLSession.shared.dataTask(with: url) { [weak self] (data, _, _) in
-            guard let self = self, let data = data else { return }
-            let decoder = JSONDecoder()
-            decoder.dateDecodingStrategy = .iso8601
-            guard let list = try? decoder.decode([Epidemic].self, from: data) else { return }
-            self.epidemics = list
-            DispatchQueue.main.async {
-                self.geocodeNext(index: 0)
+        if !forceRefresh, let snapshot = repository.cachedSnapshot() {
+            show(snapshot)
+        }
+
+        repository.refresh { [weak self] result in
+            switch result {
+            case .success(let snapshot):
+                self?.show(snapshot)
+            case .failure(let error):
+                self?.statusLabel.text = error.localizedDescription + "\n點右上角重新整理"
             }
-        }.resume()
+        }
+    }
+
+    private func show(_ snapshot: EpidemicSnapshot) {
+        let annotations = mapView.annotations.filter { $0 is EpidemicAnnotation }
+        mapView.removeAnnotations(annotations)
+        epidemics = snapshot.epidemics
+        statusLabel.isHidden = true
+        geocodeNext(index: 0)
+    }
+
+    private func configureStatusLabel() {
+        statusLabel.font = .preferredFont(forTextStyle: .subheadline)
+        statusLabel.textColor = .secondaryLabel
+        statusLabel.backgroundColor = UIColor.systemBackground.withAlphaComponent(0.9)
+        statusLabel.textAlignment = .center
+        statusLabel.numberOfLines = 0
+        statusLabel.layer.cornerRadius = 10
+        statusLabel.layer.masksToBounds = true
+        statusLabel.translatesAutoresizingMaskIntoConstraints = false
+        mapView.addSubview(statusLabel)
+        NSLayoutConstraint.activate([
+            statusLabel.centerXAnchor.constraint(equalTo: mapView.centerXAnchor),
+            statusLabel.topAnchor.constraint(equalTo: mapView.safeAreaLayoutGuide.topAnchor, constant: 12),
+            statusLabel.widthAnchor.constraint(lessThanOrEqualTo: mapView.widthAnchor, multiplier: 0.8),
+            statusLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 44)
+        ])
     }
 
     private func geocodeNext(index: Int) {
@@ -217,6 +200,12 @@ extension MapViewController: CLLocationManagerDelegate {
         switch manager.authorizationStatus {
         case .authorizedWhenInUse, .authorizedAlways:
             manager.startUpdatingLocation()
+        case .denied, .restricted:
+            statusLabel.text = "未開啟定位，仍可瀏覽全球疫情警告。"
+            statusLabel.isHidden = false
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3) { [weak self] in
+                self?.statusLabel.isHidden = true
+            }
         default:
             break
         }

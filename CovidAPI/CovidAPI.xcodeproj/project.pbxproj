@@ -16,7 +16,22 @@
 		29044FE42664597600D044D5 /* EpidemicTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29044FE32664597600D044D5 /* EpidemicTableViewController.swift */; };
 		2904500C26673A8A00D044D5 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2904500B26673A8A00D044D5 /* DetailViewController.swift */; };
 		2904501F26800F0100D044D5 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2904502026800F0200D044D5 /* MapViewController.swift */; };
+		A100000126800F0100D044D5 /* Epidemic.swift in Sources */ = {isa = PBXBuildFile; fileRef = A100001126800F0200D044D5 /* Epidemic.swift */; };
+		A100000226800F0100D044D5 /* EpidemicRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = A100001226800F0200D044D5 /* EpidemicRepository.swift */; };
+		A100000326800F0100D044D5 /* EpidemicListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A100001326800F0200D044D5 /* EpidemicListViewModel.swift */; };
+		B100000126800F0100D044D5 /* EpidemicTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B100001126800F0200D044D5 /* EpidemicTests.swift */; };
+		B100000226800F0100D044D5 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B100001226800F0200D044D5 /* XCTest.framework */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		B100002526800F0200D044D5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29044FC42664580800D044D5 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 29044FCB2664580800D044D5;
+			remoteInfo = CovidAPI;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		29044FCC2664580800D044D5 /* CovidAPI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CovidAPI.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -30,6 +45,14 @@
 		29044FE32664597600D044D5 /* EpidemicTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpidemicTableViewController.swift; sourceTree = "<group>"; };
 		2904500B26673A8A00D044D5 /* DetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
 		2904502026800F0200D044D5 /* MapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
+		A100001126800F0200D044D5 /* Epidemic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Epidemic.swift; sourceTree = "<group>"; };
+		A100001226800F0200D044D5 /* EpidemicRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpidemicRepository.swift; sourceTree = "<group>"; };
+		A100001326800F0200D044D5 /* EpidemicListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpidemicListViewModel.swift; sourceTree = "<group>"; };
+		A100001426800F0200D044D5 /* Signing.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Signing.xcconfig; sourceTree = "<group>"; };
+		A100001526800F0200D044D5 /* Signing.local.xcconfig.example */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Signing.local.xcconfig.example; sourceTree = "<group>"; };
+		B100001126800F0200D044D5 /* EpidemicTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpidemicTests.swift; sourceTree = "<group>"; };
+		B100001226800F0200D044D5 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = System/Library/Frameworks/XCTest.framework; sourceTree = SDKROOT; };
+		B100001326800F0200D044D5 /* CovidAPITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CovidAPITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -40,6 +63,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		B100002126800F0200D044D5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B100000226800F0100D044D5 /* XCTest.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -47,7 +78,10 @@
 			isa = PBXGroup;
 			children = (
 				29044FCE2664580800D044D5 /* CovidAPI */,
+				A100002126800F0200D044D5 /* Config */,
+				B100002426800F0200D044D5 /* CovidAPITests */,
 				29044FCD2664580800D044D5 /* Products */,
+				915E60BC301C9AC900811ABA /* Recovered References */,
 			);
 			sourceTree = "<group>";
 		};
@@ -55,6 +89,7 @@
 			isa = PBXGroup;
 			children = (
 				29044FCC2664580800D044D5 /* CovidAPI.app */,
+				B100001326800F0200D044D5 /* CovidAPITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -68,12 +103,40 @@
 				29044FE32664597600D044D5 /* EpidemicTableViewController.swift */,
 				2904500B26673A8A00D044D5 /* DetailViewController.swift */,
 				2904502026800F0200D044D5 /* MapViewController.swift */,
+				A100001126800F0200D044D5 /* Epidemic.swift */,
+				A100001226800F0200D044D5 /* EpidemicRepository.swift */,
+				A100001326800F0200D044D5 /* EpidemicListViewModel.swift */,
 				29044FD52664580800D044D5 /* Main.storyboard */,
 				29044FD82664580F00D044D5 /* Assets.xcassets */,
 				29044FDA2664580F00D044D5 /* LaunchScreen.storyboard */,
 				29044FDD2664580F00D044D5 /* Info.plist */,
 			);
 			path = CovidAPI;
+			sourceTree = "<group>";
+		};
+		915E60BC301C9AC900811ABA /* Recovered References */ = {
+			isa = PBXGroup;
+			children = (
+				B100001226800F0200D044D5 /* XCTest.framework */,
+			);
+			name = "Recovered References";
+			sourceTree = "<group>";
+		};
+		A100002126800F0200D044D5 /* Config */ = {
+			isa = PBXGroup;
+			children = (
+				A100001426800F0200D044D5 /* Signing.xcconfig */,
+				A100001526800F0200D044D5 /* Signing.local.xcconfig.example */,
+			);
+			path = Config;
+			sourceTree = "<group>";
+		};
+		B100002426800F0200D044D5 /* CovidAPITests */ = {
+			isa = PBXGroup;
+			children = (
+				B100001126800F0200D044D5 /* EpidemicTests.swift */,
+			);
+			path = CovidAPITests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -95,6 +158,24 @@
 			productName = CovidAPI;
 			productReference = 29044FCC2664580800D044D5 /* CovidAPI.app */;
 			productType = "com.apple.product-type.application";
+		};
+		B100002626800F0200D044D5 /* CovidAPITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B100003126800F0200D044D5 /* Build configuration list for PBXNativeTarget "CovidAPITests" */;
+			buildPhases = (
+				B100002726800F0200D044D5 /* Sources */,
+				B100002126800F0200D044D5 /* Frameworks */,
+				B100002826800F0200D044D5 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				B100002926800F0200D044D5 /* PBXTargetDependency */,
+			);
+			name = CovidAPITests;
+			productName = CovidAPITests;
+			productReference = B100001326800F0200D044D5 /* CovidAPITests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
 
@@ -124,6 +205,7 @@
 			projectRoot = "";
 			targets = (
 				29044FCB2664580800D044D5 /* CovidAPI */,
+				B100002626800F0200D044D5 /* CovidAPITests */,
 			);
 		};
 /* End PBXProject section */
@@ -139,6 +221,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		B100002826800F0200D044D5 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -150,12 +239,31 @@
 				29044FE42664597600D044D5 /* EpidemicTableViewController.swift in Sources */,
 				2904500C26673A8A00D044D5 /* DetailViewController.swift in Sources */,
 				2904501F26800F0100D044D5 /* MapViewController.swift in Sources */,
+				A100000126800F0100D044D5 /* Epidemic.swift in Sources */,
+				A100000226800F0100D044D5 /* EpidemicRepository.swift in Sources */,
+				A100000326800F0100D044D5 /* EpidemicListViewModel.swift in Sources */,
 				29044FD02664580800D044D5 /* AppDelegate.swift in Sources */,
 				29044FD22664580800D044D5 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		B100002726800F0200D044D5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B100000126800F0100D044D5 /* EpidemicTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		B100002926800F0200D044D5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 29044FCB2664580800D044D5 /* CovidAPI */;
+			targetProxy = B100002526800F0200D044D5 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		29044FD52664580800D044D5 /* Main.storyboard */ = {
@@ -295,6 +403,7 @@
 		};
 		29044FE12664580F00D044D5 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = A100001426800F0200D044D5 /* Signing.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -304,7 +413,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = ClcStudio.CovidAPI;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.CovidAPI;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -313,6 +422,7 @@
 		};
 		29044FE22664580F00D044D5 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = A100001426800F0200D044D5 /* Signing.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -322,10 +432,50 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = ClcStudio.CovidAPI;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.CovidAPI;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		B100003226800F0200D044D5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = ClcStudio.CovidAPITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CovidAPI.app/CovidAPI";
+			};
+			name = Debug;
+		};
+		B100003326800F0200D044D5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = ClcStudio.CovidAPITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CovidAPI.app/CovidAPI";
 			};
 			name = Release;
 		};
@@ -346,6 +496,15 @@
 			buildConfigurations = (
 				29044FE12664580F00D044D5 /* Debug */,
 				29044FE22664580F00D044D5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B100003126800F0200D044D5 /* Build configuration list for PBXNativeTarget "CovidAPITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B100003226800F0200D044D5 /* Debug */,
+				B100003326800F0200D044D5 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
