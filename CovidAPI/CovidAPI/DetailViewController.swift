@@ -33,6 +33,7 @@ class DetailViewController: UITableViewController {
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 300
         tableView.separatorStyle = .none
+        tableView.accessibilityIdentifier = "epidemic.detail"
     }
 
     // MARK: - Table view data source
@@ -73,6 +74,8 @@ class DetailViewController: UITableViewController {
         cell.describeLabel.attributedText = attributed
         cell.describeLabel.numberOfLines = 0
         cell.describeLabel.adjustsFontForContentSizeCategory = true
+        cell.describeLabel.accessibilityIdentifier = "epidemic.detail.description"
+        cell.describeLabel.accessibilityLabel = "發布日 \(dateString)。\(epidemic.description)"
         cell.selectionStyle = .none
         return cell
     }

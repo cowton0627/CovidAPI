@@ -47,7 +47,7 @@ iOS app 練習作品，串接行政院疾管署（CDC）旅遊疫情建議 Open 
 - **地圖**：`MapKit`（`MKMapView` / `MKMarkerAnnotationView` / 自訂 `detailCalloutAccessoryView`）
 - **定位 / 地理編碼**：`CoreLocation`（`CLLocationManager`）+ `CLGeocoder`
 - **架構**：`SceneDelegate` 程式建構 `UITabBarController`，列表與地圖兩個 navigation stack
-- **品質**：XCTest 單元測試、GitHub Actions 持續整合
+- **品質**：XCTest 單元測試、XCUITest 核心流程測試、GitHub Actions 持續整合
 
 ## 架構
 
@@ -80,7 +80,7 @@ xcodebuild test \
   -destination 'platform=iOS Simulator,name=iPhone 16'
 ```
 
-目前涵蓋疫情等級判定、API 成功快取、離線 fallback，以及 ViewModel 搜尋／篩選。
+目前有 7 項單元測試，涵蓋疫情等級判定、API 成功快取、離線 fallback、ViewModel 搜尋／篩選、地名正規化與座標快取；另有 3 項 UI tests，涵蓋搜尋與等級篩選、詳細頁導覽及地圖 tab 切換。
 
 ## Roadmap
 
@@ -92,7 +92,7 @@ xcodebuild test \
 - [x] 國家名稱正規化與座標快取
 - [x] 地圖 marker clustering
 - [ ] 收藏地區與警示通知
-- [ ] UI tests 與 VoiceOver accessibility audit
+- [x] UI tests 與 VoiceOver accessibility audit
 
 ## 資料來源
 

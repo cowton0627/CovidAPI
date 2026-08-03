@@ -35,6 +35,7 @@ class EpidemicTableViewController: UITableViewController {
 
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 88
+        tableView.accessibilityIdentifier = "epidemic.list"
 
         refreshControl = UIRefreshControl()
         refreshControl?.addTarget(self, action: #selector(refresh), for: .valueChanged)
@@ -42,6 +43,7 @@ class EpidemicTableViewController: UITableViewController {
         searchController.searchResultsUpdater = self
         searchController.obscuresBackgroundDuringPresentation = false
         searchController.searchBar.placeholder = "搜尋國家、地區或疾病"
+        searchController.searchBar.searchTextField.accessibilityIdentifier = "epidemic.search"
         navigationItem.searchController = searchController
         navigationItem.hidesSearchBarWhenScrolling = false
         definesPresentationContext = true
@@ -49,6 +51,7 @@ class EpidemicTableViewController: UITableViewController {
         filterControl.selectedSegmentIndex = AlertFilter.all.rawValue
         filterControl.addTarget(self, action: #selector(filterChanged), for: .valueChanged)
         filterControl.selectedSegmentTintColor = .systemOrange
+        filterControl.accessibilityIdentifier = "epidemic.filter"
         navigationItem.titleView = filterControl
 
         viewModel.onChange = { [weak self] in
@@ -94,6 +97,10 @@ class EpidemicTableViewController: UITableViewController {
         cell.ourbreakDayLabel.adjustsFontForContentSizeCategory = true
 
         cell.accessoryType = .disclosureIndicator
+        cell.accessibilityIdentifier = "epidemic.cell.\(indexPath.row)"
+        cell.isAccessibilityElement = true
+        cell.accessibilityLabel = "\(epidemic.headline)，發布日 \(cell.ourbreakDayLabel.text ?? "")"
+        cell.accessibilityHint = "點兩下查看疫情詳細資訊"
         return cell
     }
     
@@ -160,6 +167,7 @@ class EpidemicTableViewController: UITableViewController {
         label.textAlignment = .center
         label.frame.size.height = 44
         label.adjustsFontForContentSizeCategory = true
+        label.accessibilityIdentifier = "epidemic.updatedAt"
         return label
     }
 
@@ -170,6 +178,7 @@ class EpidemicTableViewController: UITableViewController {
         retryAction: (() -> Void)? = nil
     ) -> UIView {
         let container = UIView()
+        container.accessibilityIdentifier = "epidemic.state"
         let stack = UIStackView()
         stack.axis = .vertical
         stack.alignment = .center
@@ -202,6 +211,7 @@ class EpidemicTableViewController: UITableViewController {
             button.setTitle("重試", for: .normal)
             button.titleLabel?.font = .preferredFont(forTextStyle: .headline)
             button.action = retryAction
+            button.accessibilityIdentifier = "epidemic.retry"
             stack.addArrangedSubview(button)
         }
 

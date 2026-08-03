@@ -114,7 +114,12 @@ struct EpidemicSnapshot {
 }
 
 final class EpidemicRepository {
-    static let shared = EpidemicRepository()
+    static let shared: EpidemicRepository = {
+        guard ProcessInfo.processInfo.arguments.contains("--ui-testing") else {
+            return EpidemicRepository()
+        }
+        return EpidemicRepository(apiClient: UITestingAPIClient(), cache: UITestingCache())
+    }()
 
     private let apiClient: EpidemicAPIClientProtocol
     private let cache: EpidemicCacheProtocol
@@ -187,4 +192,20 @@ final class EpidemicRepository {
             }
         }
     }
+}
+
+private final class UITestingAPIClient: EpidemicAPIClientProtocol {
+    func fetch(completion: @escaping (Result<[Epidemic], Error>) -> Void) {
+        let date = Date(timeIntervalSince1970: 1_700_000_000)
+        completion(.success([
+            Epidemic(headline: "日本-腸病毒 第一級注意", effective: date, description: "日本疫情測試資料"),
+            Epidemic(headline: "美國-沙門氏菌感染症 第三級警告", effective: date, description: "美國疫情測試資料")
+        ]))
+    }
+}
+
+private final class UITestingCache: EpidemicCacheProtocol {
+    var modifiedAt: Date? { nil }
+    func load() -> [Epidemic]? { nil }
+    func save(_ epidemics: [Epidemic]) {}
 }

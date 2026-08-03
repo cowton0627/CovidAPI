@@ -19,6 +19,8 @@
 - 地圖 geocoding 改用正規化地名，並以 UserDefaults 持久化座標，重新載入時可直接建立 marker。
 - 地圖資料刷新會取消舊 geocoding 批次，避免過期或重複 marker 混入。
 - 鄰近地圖 marker 會自動聚合，群組 marker 顯示包含的疫情筆數。
+- 加入 3 項使用固定 fixture 的 UI tests，覆蓋搜尋／篩選、詳細頁導覽與地圖 tab 切換。
+- 為列表、搜尋、篩選、狀態畫面、詳細內容、地圖 marker／群組與操作按鈕補齊 accessibility identifier、label 與 hint。
 
 ## 驗證結果
 
@@ -31,6 +33,10 @@
   - ViewModel 搜尋與等級篩選。
   - 國家名稱別名與警示文字正規化。
   - 座標快取跨 instance 持久化。
+- 3 項 UI tests 全部通過，0 failures：
+  - 搜尋與警示等級篩選。
+  - 列表進入詳細頁。
+  - 切換至地圖頁。
 - Smoke test 確認 app 可安裝、啟動並載入 CDC 資料；列表、搜尋列、篩選器與 tab bar 顯示正常，未發生 crash。
 - `project.pbxproj`、`Info.plist` 與 `git diff --check` 驗證通過。
 - 本機簽章可從 ignored 的 `Signing.local.xcconfig` 解析，commit 中沒有個人 Team ID。
@@ -45,4 +51,4 @@
 
 1. 人工完成搜尋、篩選、詳細頁、地圖 marker／callout 與離線模式操作檢查。
 2. 推送 `main`，確認 GitHub Actions 通過。
-3. 補充 UI tests 與 VoiceOver accessibility audit。
+3. 評估收藏地區與警示通知的產品範圍與權限流程。

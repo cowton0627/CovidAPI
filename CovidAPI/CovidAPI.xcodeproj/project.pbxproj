@@ -22,10 +22,19 @@
 		A100000326800F0100D044D5 /* EpidemicListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A100001326800F0200D044D5 /* EpidemicListViewModel.swift */; };
 		B100000126800F0100D044D5 /* EpidemicTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B100001126800F0200D044D5 /* EpidemicTests.swift */; };
 		B100000226800F0100D044D5 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B100001226800F0200D044D5 /* XCTest.framework */; };
+		C100000126800F0100D044D5 /* CovidAPIUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C100001126800F0200D044D5 /* CovidAPIUITests.swift */; };
+		C100000226800F0100D044D5 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B100001226800F0200D044D5 /* XCTest.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
 		B100002526800F0200D044D5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29044FC42664580800D044D5 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 29044FCB2664580800D044D5;
+			remoteInfo = CovidAPI;
+		};
+		C100002526800F0200D044D5 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 29044FC42664580800D044D5 /* Project object */;
 			proxyType = 1;
@@ -55,6 +64,8 @@
 		B100001126800F0200D044D5 /* EpidemicTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpidemicTests.swift; sourceTree = "<group>"; };
 		B100001226800F0200D044D5 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = System/Library/Frameworks/XCTest.framework; sourceTree = SDKROOT; };
 		B100001326800F0200D044D5 /* CovidAPITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CovidAPITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		C100001126800F0200D044D5 /* CovidAPIUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CovidAPIUITests.swift; sourceTree = "<group>"; };
+		C100001326800F0200D044D5 /* CovidAPIUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CovidAPIUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,6 +84,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		C100002126800F0200D044D5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C100000226800F0100D044D5 /* XCTest.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -82,6 +101,7 @@
 				29044FCE2664580800D044D5 /* CovidAPI */,
 				A100002126800F0200D044D5 /* Config */,
 				B100002426800F0200D044D5 /* CovidAPITests */,
+				C100002426800F0200D044D5 /* CovidAPIUITests */,
 				29044FCD2664580800D044D5 /* Products */,
 				915E60BC301C9AC900811ABA /* Recovered References */,
 			);
@@ -92,6 +112,7 @@
 			children = (
 				29044FCC2664580800D044D5 /* CovidAPI.app */,
 				B100001326800F0200D044D5 /* CovidAPITests.xctest */,
+				C100001326800F0200D044D5 /* CovidAPIUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -142,6 +163,14 @@
 			path = CovidAPITests;
 			sourceTree = "<group>";
 		};
+		C100002426800F0200D044D5 /* CovidAPIUITests */ = {
+			isa = PBXGroup;
+			children = (
+				C100001126800F0200D044D5 /* CovidAPIUITests.swift */,
+			);
+			path = CovidAPIUITests;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -180,6 +209,24 @@
 			productReference = B100001326800F0200D044D5 /* CovidAPITests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		C100002626800F0200D044D5 /* CovidAPIUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C100003126800F0200D044D5 /* Build configuration list for PBXNativeTarget "CovidAPIUITests" */;
+			buildPhases = (
+				C100002726800F0200D044D5 /* Sources */,
+				C100002126800F0200D044D5 /* Frameworks */,
+				C100002826800F0200D044D5 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				C100002926800F0200D044D5 /* PBXTargetDependency */,
+			);
+			name = CovidAPIUITests;
+			productName = CovidAPIUITests;
+			productReference = C100001326800F0200D044D5 /* CovidAPIUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -191,6 +238,10 @@
 				TargetAttributes = {
 					29044FCB2664580800D044D5 = {
 						CreatedOnToolsVersion = 12.5;
+					};
+					C100002626800F0200D044D5 = {
+						CreatedOnToolsVersion = 12.5;
+						TestTargetID = 29044FCB2664580800D044D5;
 					};
 				};
 			};
@@ -209,6 +260,7 @@
 			targets = (
 				29044FCB2664580800D044D5 /* CovidAPI */,
 				B100002626800F0200D044D5 /* CovidAPITests */,
+				C100002626800F0200D044D5 /* CovidAPIUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -225,6 +277,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		B100002826800F0200D044D5 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C100002826800F0200D044D5 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -259,6 +318,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		C100002726800F0200D044D5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C100000126800F0100D044D5 /* CovidAPIUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -266,6 +333,11 @@
 			isa = PBXTargetDependency;
 			target = 29044FCB2664580800D044D5 /* CovidAPI */;
 			targetProxy = B100002526800F0200D044D5 /* PBXContainerItemProxy */;
+		};
+		C100002926800F0200D044D5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 29044FCB2664580800D044D5 /* CovidAPI */;
+			targetProxy = C100002526800F0200D044D5 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -483,6 +555,34 @@
 			};
 			name = Release;
 		};
+		C100003226800F0200D044D5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				PRODUCT_BUNDLE_IDENTIFIER = ClcStudio.CovidAPIUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = CovidAPI;
+			};
+			name = Debug;
+		};
+		C100003326800F0200D044D5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				PRODUCT_BUNDLE_IDENTIFIER = ClcStudio.CovidAPIUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = CovidAPI;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -509,6 +609,15 @@
 			buildConfigurations = (
 				B100003226800F0200D044D5 /* Debug */,
 				B100003326800F0200D044D5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C100003126800F0200D044D5 /* Build configuration list for PBXNativeTarget "CovidAPIUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C100003226800F0200D044D5 /* Debug */,
+				C100003326800F0200D044D5 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

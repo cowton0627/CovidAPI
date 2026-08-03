@@ -46,8 +46,10 @@ class MapViewController: UIViewController {
         navigationItem.largeTitleDisplayMode = .always
 
         mapView.delegate = self
+        mapView.accessibilityIdentifier = "epidemic.map"
         mapView.showsCompass = true
-        mapView.showsUserLocation = true
+        let isUITesting = ProcessInfo.processInfo.arguments.contains("--ui-testing")
+        mapView.showsUserLocation = !isUITesting
 
         let center = CLLocationCoordinate2D(latitude: 23.5, longitude: 121.0)
         let span = MKCoordinateSpan(latitudeDelta: 80, longitudeDelta: 80)
@@ -58,9 +60,12 @@ class MapViewController: UIViewController {
             target: self,
             action: #selector(reload)
         )
+        navigationItem.rightBarButtonItem?.accessibilityLabel = "重新整理疫情地圖"
 
-        locationManager.delegate = self
-        locationManager.requestWhenInUseAuthorization()
+        if !isUITesting {
+            locationManager.delegate = self
+            locationManager.requestWhenInUseAuthorization()
+        }
 
         configureStatusLabel()
         loadData()
@@ -108,6 +113,7 @@ class MapViewController: UIViewController {
         statusLabel.numberOfLines = 0
         statusLabel.layer.cornerRadius = 10
         statusLabel.layer.masksToBounds = true
+        statusLabel.accessibilityIdentifier = "epidemic.map.status"
         statusLabel.translatesAutoresizingMaskIntoConstraints = false
         mapView.addSubview(statusLabel)
         NSLayoutConstraint.activate([
@@ -213,6 +219,9 @@ extension MapViewController: MKMapViewDelegate {
         view.canShowCallout = true
         view.detailCalloutAccessoryView = makeCalloutDetailView(for: epAnn)
         view.rightCalloutAccessoryView = UIButton(type: .detailDisclosure)
+        view.accessibilityLabel = "\(epAnn.epidemic.headline)，\(epAnn.alertLevel.label)"
+        view.accessibilityHint = "點兩下顯示摘要與詳細資訊按鈕"
+        view.rightCalloutAccessoryView?.accessibilityLabel = "查看完整疫情資訊"
         return view
     }
 
