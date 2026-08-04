@@ -75,9 +75,11 @@ class EpidemicTableViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "outBreakCell", for: indexPath) as! EpidemicTableViewCell
         let epidemic = viewModel.visibleEpidemics[indexPath.row]
 
+        let alertLevel = AlertLevel.from(epidemic: epidemic)
         let symbolConfig = UIImage.SymbolConfiguration(textStyle: .headline)
-        let icon = UIImage(systemName: "exclamationmark.triangle.fill", withConfiguration: symbolConfig)?
-            .withTintColor(.systemOrange, renderingMode: .alwaysOriginal)
+        let symbolName = alertLevel == .unknown ? "questionmark.circle.fill" : "exclamationmark.triangle.fill"
+        let icon = UIImage(systemName: symbolName, withConfiguration: symbolConfig)?
+            .withTintColor(alertLevel.color, renderingMode: .alwaysOriginal)
         let attachment = NSTextAttachment()
         attachment.image = icon
         let titleText = NSMutableAttributedString(attachment: attachment)
@@ -99,7 +101,8 @@ class EpidemicTableViewController: UITableViewController {
         cell.accessoryType = .disclosureIndicator
         cell.accessibilityIdentifier = "epidemic.cell.\(indexPath.row)"
         cell.isAccessibilityElement = true
-        cell.accessibilityLabel = "\(epidemic.headline)，發布日 \(cell.ourbreakDayLabel.text ?? "")"
+        let levelDescription = alertLevel == .unknown ? "疾管署未提供等級" : alertLevel.label
+        cell.accessibilityLabel = "\(epidemic.headline)，\(levelDescription)，發布日 \(cell.ourbreakDayLabel.text ?? "")"
         cell.accessibilityHint = "點兩下查看疫情詳細資訊"
         return cell
     }
@@ -128,6 +131,7 @@ class EpidemicTableViewController: UITableViewController {
     private func render() {
         refreshControl?.endRefreshing()
         tableView.reloadData()
+        updateFilterAvailability()
 
         switch viewModel.state {
         case .loading:
@@ -153,6 +157,20 @@ class EpidemicTableViewController: UITableViewController {
         }
     }
 
+    private func updateFilterAvailability() {
+        for filter in AlertFilter.allCases where filter != .all {
+            let hasMatchingData = viewModel.allEpidemics.contains(where: filter.matches)
+            filterControl.setEnabled(hasMatchingData, forSegmentAt: filter.rawValue)
+        }
+        let unknownCount = viewModel.allEpidemics.filter {
+            AlertLevel.from(epidemic: $0) == .unknown
+        }.count
+        let summary = unknownCount == 0
+            ? "所有資料均有疾管署旅遊疫情等級"
+            : "疾管署未提供等級：\(unknownCount) 筆"
+        filterControl.accessibilityHint = summary
+    }
+
     private func makeUpdatedFooter() -> UIView? {
         guard let updatedAt = viewModel.updatedAt else { return nil }
         let formatter = DateFormatter()
@@ -161,7 +179,11 @@ class EpidemicTableViewController: UITableViewController {
 
         let label = UILabel()
         let source = viewModel.isShowingCachedData ? "離線資料" : "疾管署資料"
-        label.text = "\(source)・更新於 \(formatter.string(from: updatedAt))"
+        let unknownCount = viewModel.allEpidemics.filter {
+            AlertLevel.from(epidemic: $0) == .unknown
+        }.count
+        let levelNote = unknownCount > 0 ? "・未分級 \(unknownCount) 筆" : ""
+        label.text = "\(source)・更新於 \(formatter.string(from: updatedAt))\(levelNote)"
         label.font = .preferredFont(forTextStyle: .caption1)
         label.textColor = .secondaryLabel
         label.textAlignment = .center

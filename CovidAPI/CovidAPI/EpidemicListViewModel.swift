@@ -12,6 +12,7 @@ enum AlertFilter: Int, CaseIterable {
     case warning
     case alert
     case watch
+    case unknown
 
     var title: String {
         switch self {
@@ -19,15 +20,17 @@ enum AlertFilter: Int, CaseIterable {
         case .warning: return "三級"
         case .alert: return "二級"
         case .watch: return "一級"
+        case .unknown: return "未分級"
         }
     }
 
-    var alertLevel: AlertLevel? {
+    func matches(_ epidemic: Epidemic) -> Bool {
         switch self {
-        case .all: return nil
-        case .warning: return .warning
-        case .alert: return .alert
-        case .watch: return .watch
+        case .all: return true
+        case .warning: return AlertLevel.from(epidemic: epidemic) == .warning
+        case .alert: return AlertLevel.from(epidemic: epidemic) == .alert
+        case .watch: return AlertLevel.from(epidemic: epidemic) == .watch
+        case .unknown: return AlertLevel.from(epidemic: epidemic) == .unknown
         }
     }
 }
@@ -90,9 +93,7 @@ final class EpidemicListViewModel {
 
     private func applyFilters() {
         visibleEpidemics = allEpidemics.filter { epidemic in
-            let matchesLevel = filter.alertLevel.map {
-                AlertLevel.from(epidemic: epidemic) == $0
-            } ?? true
+            let matchesLevel = filter.matches(epidemic)
             let matchesQuery = query.isEmpty ||
                 epidemic.headline.localizedCaseInsensitiveContains(query) ||
                 epidemic.description.localizedCaseInsensitiveContains(query)

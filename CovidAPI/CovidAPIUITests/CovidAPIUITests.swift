@@ -23,6 +23,9 @@ final class CovidAPIUITests: XCTestCase {
         app.buttons["Cancel"].tap()
         app.segmentedControls["epidemic.filter"].buttons["三級"].tap()
         XCTAssertTrue(app.staticTexts.matching(NSPredicate(format: "label CONTAINS '美國-沙門氏菌'")).firstMatch.waitForExistence(timeout: 2))
+
+        app.segmentedControls["epidemic.filter"].buttons["未分級"].tap()
+        XCTAssertTrue(app.staticTexts.matching(NSPredicate(format: "label CONTAINS '日本-腸病毒'")).firstMatch.waitForExistence(timeout: 2))
     }
 
     func testOpensDetailFromList() {

@@ -21,11 +21,12 @@
 - 鄰近地圖 marker 會自動聚合，群組 marker 顯示包含的疫情筆數。
 - 加入 3 項使用固定 fixture 的 UI tests，覆蓋搜尋／篩選、詳細頁導覽與地圖 tab 切換。
 - 為列表、搜尋、篩選、狀態畫面、詳細內容、地圖 marker／群組與操作按鈕補齊 accessibility identifier、label 與 hint。
+- 解析疾管署 `severity_level`，新增「未分級」篩選並停用沒有資料的等級，避免將空白誤解為疫情不嚴重。
 
 ## 驗證結果
 
 - iPhone 15、iOS 17.5 Simulator build 成功。
-- 7 項單元測試全部通過，0 failures：
+- 9 項單元測試全部通過，0 failures：
   - 疫情等級判定採用最高匹配等級。
   - API 成功後寫入快取。
   - 網路失敗時使用磁碟快取。
@@ -33,6 +34,8 @@
   - ViewModel 搜尋與等級篩選。
   - 國家名稱別名與警示文字正規化。
   - 座標快取跨 instance 持久化。
+  - 優先採用疾管署 `severity_level`。
+  - 解碼明確與未提供的疫情等級。
 - 3 項 UI tests 全部通過，0 failures：
   - 搜尋與警示等級篩選。
   - 列表進入詳細頁。

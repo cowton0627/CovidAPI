@@ -15,6 +15,32 @@ final class EpidemicTests: XCTestCase {
         XCTAssertEqual(AlertLevel.from(epidemic: epidemic), .warning)
     }
 
+    func testAlertLevelPrefersCDCSeverityLevel() {
+        let epidemic = Epidemic(
+            headline: "測試地區",
+            effective: date,
+            description: "一般疫情資訊",
+            severityLevel: 2
+        )
+
+        XCTAssertEqual(AlertLevel.from(epidemic: epidemic), .alert)
+    }
+
+    func testDecodesMissingAndExplicitSeverityLevel() throws {
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        let data = Data("""
+        [
+          {"headline":"日本-腸病毒","effective":"2026-08-01T00:00:00Z","description":"內容","severity_level":null},
+          {"headline":"測試地區","effective":"2026-08-01T00:00:00Z","description":"內容","severity_level":3}
+        ]
+        """.utf8)
+
+        let decoded = try decoder.decode([Epidemic].self, from: data)
+        XCTAssertNil(decoded[0].severityLevel)
+        XCTAssertEqual(decoded[1].severityLevel, 3)
+    }
+
     func testRepositorySavesFreshResponse() {
         let item = makeEpidemic(headline: "日本 第二級警示")
         let cache = CacheStub()
