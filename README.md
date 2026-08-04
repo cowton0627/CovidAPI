@@ -17,6 +17,7 @@ iOS app 練習作品，串接行政院疾管署（CDC）旅遊疫情建議 Open 
 ### 詳細頁
 - 顯示完整疫情描述，內容過長可捲動
 - 標題置於 navigation bar，內文上方標註發布日
+- 可收藏或取消收藏該疫情地區；收藏會套用到同地區後續的其他疫情
 
 <p align="center">
   <img src="screenshots/detail.png" width="280" alt="詳細頁">
@@ -69,6 +70,7 @@ EpidemicRepository
 - 可依疾管署提供的第一、二、三級旅遊疫情等級篩選，沒有等級的資料歸入「未分級」
 - 沒有資料的等級選項會停用；「未分級」不代表疫情不嚴重，只代表來源未提供等級
 - 顯示資料來源及最後更新時間
+- 列表左上角星號可切換為只顯示收藏地區，收藏會保存在裝置上
 
 ## 測試
 
@@ -81,7 +83,7 @@ xcodebuild test \
   -destination 'platform=iOS Simulator,name=iPhone 16'
 ```
 
-目前有 9 項單元測試，涵蓋疫情等級判定、疾管署等級解碼、API 成功快取、離線 fallback、ViewModel 搜尋／篩選、地名正規化與座標快取；另有 3 項 UI tests，涵蓋搜尋與等級／未分級篩選、詳細頁導覽及地圖 tab 切換。
+目前有 11 項單元測試，涵蓋疫情等級判定、疾管署等級解碼、API 成功快取、離線 fallback、ViewModel 搜尋／篩選、收藏持久化、地名正規化與座標快取；另有 4 項 UI tests，涵蓋搜尋與等級／未分級篩選、收藏流程、詳細頁導覽及地圖 tab 切換。
 
 ## Roadmap
 
@@ -92,7 +94,8 @@ xcodebuild test \
 - [x] 單元測試與 CI
 - [x] 國家名稱正規化與座標快取
 - [x] 地圖 marker clustering
-- [ ] 收藏地區與警示通知
+- [x] 收藏地區
+- [ ] 收藏地區的新疫情通知
 - [x] UI tests 與 VoiceOver accessibility audit
 
 ## 資料來源

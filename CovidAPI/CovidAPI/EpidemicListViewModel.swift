@@ -39,6 +39,7 @@ final class EpidemicListViewModel {
     var onChange: (() -> Void)?
 
     private let repository: EpidemicRepository
+    private let favoriteStore: FavoriteStoreProtocol
     private(set) var state: EpidemicListState = .loading
     private(set) var allEpidemics: [Epidemic] = []
     private(set) var visibleEpidemics: [Epidemic] = []
@@ -46,9 +47,11 @@ final class EpidemicListViewModel {
     private(set) var isShowingCachedData = false
     private var query = ""
     private var filter: AlertFilter = .all
+    private var showsFavoritesOnly = false
 
-    init(repository: EpidemicRepository = .shared) {
+    init(repository: EpidemicRepository = .shared, favoriteStore: FavoriteStoreProtocol = FavoriteStore.shared) {
         self.repository = repository
+        self.favoriteStore = favoriteStore
     }
 
     func load() {
@@ -84,6 +87,15 @@ final class EpidemicListViewModel {
         applyFilters()
     }
 
+    func setShowsFavoritesOnly(_ showsFavoritesOnly: Bool) {
+        self.showsFavoritesOnly = showsFavoritesOnly
+        applyFilters()
+    }
+
+    func favoritesDidChange() {
+        applyFilters()
+    }
+
     private func apply(_ snapshot: EpidemicSnapshot) {
         allEpidemics = snapshot.epidemics.sorted { $0.effective > $1.effective }
         updatedAt = snapshot.updatedAt
@@ -94,10 +106,11 @@ final class EpidemicListViewModel {
     private func applyFilters() {
         visibleEpidemics = allEpidemics.filter { epidemic in
             let matchesLevel = filter.matches(epidemic)
+            let matchesFavorite = !showsFavoritesOnly || favoriteStore.contains(epidemic)
             let matchesQuery = query.isEmpty ||
                 epidemic.headline.localizedCaseInsensitiveContains(query) ||
                 epidemic.description.localizedCaseInsensitiveContains(query)
-            return matchesLevel && matchesQuery
+            return matchesLevel && matchesFavorite && matchesQuery
         }
         state = visibleEpidemics.isEmpty ? .empty : .loaded
         onChange?()

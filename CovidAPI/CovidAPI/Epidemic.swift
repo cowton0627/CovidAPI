@@ -6,12 +6,20 @@ struct Epidemic: Codable, Equatable {
     let effective: Date
     let description: String
     let severityLevel: Int?
+    let areaDescription: String?
 
-    init(headline: String, effective: Date, description: String, severityLevel: Int? = nil) {
+    init(
+        headline: String,
+        effective: Date,
+        description: String,
+        severityLevel: Int? = nil,
+        areaDescription: String? = nil
+    ) {
         self.headline = headline
         self.effective = effective
         self.description = description
         self.severityLevel = severityLevel
+        self.areaDescription = areaDescription
     }
 
     private enum CodingKeys: String, CodingKey {
@@ -19,6 +27,12 @@ struct Epidemic: Codable, Equatable {
         case effective
         case description
         case severityLevel = "severity_level"
+        case areaDescription = "areaDesc"
+    }
+
+    var favoriteLocationKey: String {
+        let area = areaDescription?.trimmingCharacters(in: .whitespacesAndNewlines)
+        return area.flatMap { $0.isEmpty ? nil : $0 } ?? LocationNameNormalizer.normalize(headline)
     }
 }
 

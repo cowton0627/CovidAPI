@@ -15,6 +15,7 @@ class DetailViewCell: UITableViewCell {
 
 class DetailViewController: UITableViewController {
     var epidemic: Epidemic!
+    var favoriteStore: FavoriteStoreProtocol = FavoriteStore.shared
     
     //    init?(coder: NSCoder, epidemic: Epidemic) {
     //          self.epidemic = epidemic
@@ -34,6 +35,27 @@ class DetailViewController: UITableViewController {
         tableView.estimatedRowHeight = 300
         tableView.separatorStyle = .none
         tableView.accessibilityIdentifier = "epidemic.detail"
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            image: nil,
+            style: .plain,
+            target: self,
+            action: #selector(toggleFavorite)
+        )
+        navigationItem.rightBarButtonItem?.accessibilityIdentifier = "epidemic.favorite.toggle"
+        updateFavoriteButton()
+    }
+
+    @objc private func toggleFavorite() {
+        favoriteStore.toggle(epidemic)
+        updateFavoriteButton()
+    }
+
+    private func updateFavoriteButton() {
+        let isFavorite = favoriteStore.contains(epidemic)
+        navigationItem.rightBarButtonItem?.image = UIImage(
+            systemName: isFavorite ? "star.fill" : "star"
+        )
+        navigationItem.rightBarButtonItem?.accessibilityLabel = isFavorite ? "取消收藏地區" : "收藏地區"
     }
 
     // MARK: - Table view data source

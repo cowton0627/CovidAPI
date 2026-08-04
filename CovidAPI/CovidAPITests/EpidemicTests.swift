@@ -142,6 +142,64 @@ final class EpidemicTests: XCTestCase {
         XCTAssertEqual(viewModel.visibleEpidemics, [warning])
     }
 
+    func testFavoriteStorePersistsLocationAcrossOutbreaks() {
+        let suiteName = "FavoriteStoreTests.\(UUID().uuidString)"
+        guard let defaults = UserDefaults(suiteName: suiteName) else {
+            return XCTFail("Unable to create isolated UserDefaults")
+        }
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+
+        let first = Epidemic(
+            headline: "日本-腸病毒",
+            effective: date,
+            description: "內容",
+            areaDescription: "日本"
+        )
+        let later = Epidemic(
+            headline: "日本-麻疹",
+            effective: date.addingTimeInterval(60),
+            description: "內容",
+            areaDescription: "日本"
+        )
+        FavoriteStore(defaults: defaults).toggle(first)
+
+        XCTAssertTrue(FavoriteStore(defaults: defaults).contains(later))
+    }
+
+    func testViewModelFiltersFavoriteLocations() {
+        let japan = Epidemic(
+            headline: "日本-腸病毒",
+            effective: date,
+            description: "內容",
+            areaDescription: "日本"
+        )
+        let usa = Epidemic(
+            headline: "美國-麻疹",
+            effective: date,
+            description: "內容",
+            areaDescription: "美國"
+        )
+        let favorites = FavoriteStoreStub(favorites: [japan.favoriteLocationKey])
+        let repository = EpidemicRepository(
+            apiClient: APIClientStub(result: .success([japan, usa])),
+            cache: CacheStub()
+        )
+        let viewModel = EpidemicListViewModel(repository: repository, favoriteStore: favorites)
+        let expectation = expectation(description: "loaded")
+        var didFulfill = false
+        viewModel.onChange = {
+            if viewModel.allEpidemics.count == 2, !didFulfill {
+                didFulfill = true
+                expectation.fulfill()
+            }
+        }
+        viewModel.load()
+        wait(for: [expectation], timeout: 1)
+
+        viewModel.setShowsFavoritesOnly(true)
+        XCTAssertEqual(viewModel.visibleEpidemics, [japan])
+    }
+
     func testLocationNameNormalizerUsesKnownAliasAndRemovesAlertText() {
         XCTAssertEqual(LocationNameNormalizer.normalize("中國大陸第三級旅遊疫情警告"), "中國")
         XCTAssertEqual(LocationNameNormalizer.normalize("日本－第二級警示：登革熱"), "日本")
@@ -164,6 +222,27 @@ final class EpidemicTests: XCTestCase {
 
     private func makeEpidemic(headline: String) -> Epidemic {
         Epidemic(headline: headline, effective: date, description: "測試內容")
+    }
+}
+
+private final class FavoriteStoreStub: FavoriteStoreProtocol {
+    private var favorites: Set<String>
+
+    init(favorites: Set<String> = []) {
+        self.favorites = favorites
+    }
+
+    func contains(_ epidemic: Epidemic) -> Bool {
+        favorites.contains(epidemic.favoriteLocationKey)
+    }
+
+    func toggle(_ epidemic: Epidemic) {
+        let key = epidemic.favoriteLocationKey
+        if favorites.contains(key) {
+            favorites.remove(key)
+        } else {
+            favorites.insert(key)
+        }
     }
 }
 

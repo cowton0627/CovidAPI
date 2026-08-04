@@ -198,8 +198,8 @@ private final class UITestingAPIClient: EpidemicAPIClientProtocol {
     func fetch(completion: @escaping (Result<[Epidemic], Error>) -> Void) {
         let date = Date(timeIntervalSince1970: 1_700_000_000)
         completion(.success([
-            Epidemic(headline: "日本-腸病毒", effective: date, description: "日本疫情測試資料"),
-            Epidemic(headline: "美國-沙門氏菌感染症", effective: date, description: "美國疫情測試資料", severityLevel: 3)
+            Epidemic(headline: "日本-腸病毒", effective: date, description: "日本疫情測試資料", areaDescription: "日本"),
+            Epidemic(headline: "美國-沙門氏菌感染症", effective: date, description: "美國疫情測試資料", severityLevel: 3, areaDescription: "美國")
         ]))
     }
 }

@@ -41,4 +41,17 @@ final class CovidAPIUITests: XCTestCase {
         let map = app.descendants(matching: .any)["epidemic.map"]
         XCTAssertTrue(map.waitForExistence(timeout: 5))
     }
+
+    func testFavoritesLocationFromDetail() {
+        let firstCell = app.cells["epidemic.cell.0"]
+        XCTAssertTrue(firstCell.waitForExistence(timeout: 5))
+        firstCell.tap()
+
+        app.buttons["收藏地區"].tap()
+        app.navigationBars.buttons.element(boundBy: 0).tap()
+        app.buttons["epidemic.favorites.filter"].tap()
+
+        XCTAssertTrue(app.staticTexts.matching(NSPredicate(format: "label CONTAINS '日本-腸病毒'")).firstMatch.waitForExistence(timeout: 2))
+        XCTAssertFalse(app.staticTexts.matching(NSPredicate(format: "label CONTAINS '美國-沙門氏菌'")).firstMatch.exists)
+    }
 }

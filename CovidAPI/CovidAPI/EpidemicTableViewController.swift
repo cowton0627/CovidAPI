@@ -18,11 +18,13 @@ class EpidemicTableViewController: UITableViewController {
     private let viewModel = EpidemicListViewModel()
     private let searchController = UISearchController(searchResultsController: nil)
     private let filterControl = UISegmentedControl(items: AlertFilter.allCases.map(\.title))
+    private var showsFavoritesOnly = false
    
     @IBSegueAction func showDetail(_ coder: NSCoder) -> DetailViewController? {
         let controller =  DetailViewController(coder: coder)
         if let row = tableView.indexPathForSelectedRow?.row {
             controller?.epidemic = viewModel.visibleEpidemics[row]
+            controller?.favoriteStore = FavoriteStore.shared
         }
         return controller
     }
@@ -53,6 +55,21 @@ class EpidemicTableViewController: UITableViewController {
         filterControl.selectedSegmentTintColor = .systemOrange
         filterControl.accessibilityIdentifier = "epidemic.filter"
         navigationItem.titleView = filterControl
+        navigationItem.leftBarButtonItem = UIBarButtonItem(
+            image: UIImage(systemName: "star"),
+            style: .plain,
+            target: self,
+            action: #selector(toggleFavoritesFilter)
+        )
+        navigationItem.leftBarButtonItem?.accessibilityIdentifier = "epidemic.favorites.filter"
+        updateFavoritesButton()
+
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(favoritesDidChange),
+            name: .epidemicFavoritesDidChange,
+            object: nil
+        )
 
         viewModel.onChange = { [weak self] in
             self?.render()
@@ -128,6 +145,25 @@ class EpidemicTableViewController: UITableViewController {
         viewModel.setFilter(filter)
     }
 
+    @objc private func toggleFavoritesFilter() {
+        showsFavoritesOnly.toggle()
+        viewModel.setShowsFavoritesOnly(showsFavoritesOnly)
+        updateFavoritesButton()
+    }
+
+    @objc private func favoritesDidChange() {
+        viewModel.favoritesDidChange()
+    }
+
+    private func updateFavoritesButton() {
+        navigationItem.leftBarButtonItem?.image = UIImage(
+            systemName: showsFavoritesOnly ? "star.fill" : "star"
+        )
+        navigationItem.leftBarButtonItem?.accessibilityLabel = showsFavoritesOnly
+            ? "顯示全部疫情"
+            : "只顯示收藏地區"
+    }
+
     private func render() {
         refreshControl?.endRefreshing()
         tableView.reloadData()
@@ -144,9 +180,12 @@ class EpidemicTableViewController: UITableViewController {
             tableView.backgroundView = nil
             tableView.tableFooterView = makeUpdatedFooter()
         case .empty:
+            let message = showsFavoritesOnly
+                ? "尚無符合條件的收藏地區，可從詳細頁加入收藏。"
+                : "請嘗試其他關鍵字或警示等級。"
             tableView.backgroundView = makeStateView(
                 title: "沒有符合條件的資料",
-                message: "請嘗試其他關鍵字或警示等級。"
+                message: message
             )
         case .failed(let message):
             tableView.backgroundView = makeStateView(
