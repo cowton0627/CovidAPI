@@ -121,7 +121,10 @@ final class EpidemicTests: XCTestCase {
             apiClient: APIClientStub(result: .success([warning, watch])),
             cache: CacheStub()
         )
-        let viewModel = EpidemicListViewModel(repository: repository)
+        let viewModel = EpidemicListViewModel(
+            repository: repository,
+            notificationManager: NotificationManagerStub()
+        )
         let expectation = expectation(description: "loaded")
         var didFulfill = false
 
@@ -184,7 +187,11 @@ final class EpidemicTests: XCTestCase {
             apiClient: APIClientStub(result: .success([japan, usa])),
             cache: CacheStub()
         )
-        let viewModel = EpidemicListViewModel(repository: repository, favoriteStore: favorites)
+        let viewModel = EpidemicListViewModel(
+            repository: repository,
+            favoriteStore: favorites,
+            notificationManager: NotificationManagerStub()
+        )
         let expectation = expectation(description: "loaded")
         var didFulfill = false
         viewModel.onChange = {
@@ -198,6 +205,44 @@ final class EpidemicTests: XCTestCase {
 
         viewModel.setShowsFavoritesOnly(true)
         XCTAssertEqual(viewModel.visibleEpidemics, [japan])
+    }
+
+    func testNotificationTrackerOnlyReturnsNewFavoriteEpidemics() {
+        let suiteName = "NotificationTrackerTests.\(UUID().uuidString)"
+        guard let defaults = UserDefaults(suiteName: suiteName) else {
+            return XCTFail("Unable to create isolated UserDefaults")
+        }
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+
+        let existing = Epidemic(
+            headline: "日本-既有疫情",
+            effective: date,
+            description: "內容",
+            areaDescription: "日本"
+        )
+        let newFavorite = Epidemic(
+            headline: "日本-新疫情",
+            effective: date.addingTimeInterval(60),
+            description: "內容",
+            areaDescription: "日本"
+        )
+        let newOther = Epidemic(
+            headline: "美國-新疫情",
+            effective: date.addingTimeInterval(60),
+            description: "內容",
+            areaDescription: "美國"
+        )
+        let tracker = EpidemicNotificationTracker(defaults: defaults)
+        let favorites = FavoriteStoreStub(favorites: ["日本"])
+        tracker.seed([existing])
+
+        XCTAssertEqual(
+            tracker.newFavorites(in: [existing, newFavorite, newOther], favoriteStore: favorites),
+            [newFavorite]
+        )
+        XCTAssertTrue(
+            tracker.newFavorites(in: [existing, newFavorite, newOther], favoriteStore: favorites).isEmpty
+        )
     }
 
     func testLocationNameNormalizerUsesKnownAliasAndRemovesAlertText() {
@@ -244,6 +289,19 @@ private final class FavoriteStoreStub: FavoriteStoreProtocol {
             favorites.insert(key)
         }
     }
+}
+
+private final class NotificationManagerStub: EpidemicNotificationManaging {
+    var isEnabled = false
+    func setEnabled(
+        _ enabled: Bool,
+        currentEpidemics: [Epidemic],
+        completion: @escaping (Bool) -> Void
+    ) {
+        isEnabled = enabled
+        completion(enabled)
+    }
+    func process(_ epidemics: [Epidemic]) {}
 }
 
 private enum TestError: Error {

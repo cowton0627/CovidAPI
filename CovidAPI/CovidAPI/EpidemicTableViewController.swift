@@ -18,6 +18,7 @@ class EpidemicTableViewController: UITableViewController {
     private let viewModel = EpidemicListViewModel()
     private let searchController = UISearchController(searchResultsController: nil)
     private let filterControl = UISegmentedControl(items: AlertFilter.allCases.map(\.title))
+    private let notificationManager = EpidemicNotificationManager.shared
     private var showsFavoritesOnly = false
    
     @IBSegueAction func showDetail(_ coder: NSCoder) -> DetailViewController? {
@@ -63,6 +64,14 @@ class EpidemicTableViewController: UITableViewController {
         )
         navigationItem.leftBarButtonItem?.accessibilityIdentifier = "epidemic.favorites.filter"
         updateFavoritesButton()
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            image: nil,
+            style: .plain,
+            target: self,
+            action: #selector(toggleNotifications)
+        )
+        navigationItem.rightBarButtonItem?.accessibilityIdentifier = "epidemic.notifications.toggle"
+        updateNotificationsButton()
 
         NotificationCenter.default.addObserver(
             self,
@@ -162,6 +171,39 @@ class EpidemicTableViewController: UITableViewController {
         navigationItem.leftBarButtonItem?.accessibilityLabel = showsFavoritesOnly
             ? "顯示全部疫情"
             : "只顯示收藏地區"
+    }
+
+    @objc private func toggleNotifications() {
+        let shouldEnable = !notificationManager.isEnabled
+        notificationManager.setEnabled(
+            shouldEnable,
+            currentEpidemics: viewModel.allEpidemics
+        ) { [weak self] enabled in
+            self?.updateNotificationsButton()
+            if shouldEnable && !enabled {
+                self?.showNotificationPermissionDeniedAlert()
+            }
+        }
+    }
+
+    private func updateNotificationsButton() {
+        let enabled = notificationManager.isEnabled
+        navigationItem.rightBarButtonItem?.image = UIImage(
+            systemName: enabled ? "bell.fill" : "bell"
+        )
+        navigationItem.rightBarButtonItem?.accessibilityLabel = enabled
+            ? "關閉收藏地區新疫情通知"
+            : "開啟收藏地區新疫情通知"
+    }
+
+    private func showNotificationPermissionDeniedAlert() {
+        let alert = UIAlertController(
+            title: "無法開啟通知",
+            message: "請至系統設定允許 CovidAPI 傳送通知。",
+            preferredStyle: .alert
+        )
+        alert.addAction(UIAlertAction(title: "知道了", style: .default))
+        present(alert, animated: true)
     }
 
     private func render() {

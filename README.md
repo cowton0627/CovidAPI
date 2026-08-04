@@ -72,6 +72,13 @@ EpidemicRepository
 - 顯示資料來源及最後更新時間
 - 列表左上角星號可切換為只顯示收藏地區，收藏會保存在裝置上
 
+## 收藏地區通知
+
+- 列表右上角鈴鐺可主動開啟或關閉通知，首次開啟才會請求系統權限
+- 開啟時只建立目前資料基準，不會把既有疫情當成新通知
+- 之後 app 重新整理並發現收藏地區的新疫情時，會傳送本機通知
+- 此版本沒有後端推播；app 長時間未開啟時不保證即時收到新疫情通知
+
 ## 測試
 
 在 Xcode 選擇 `CovidAPI` scheme 後按 `⌘U`，或執行：
@@ -83,7 +90,7 @@ xcodebuild test \
   -destination 'platform=iOS Simulator,name=iPhone 16'
 ```
 
-目前有 11 項單元測試，涵蓋疫情等級判定、疾管署等級解碼、API 成功快取、離線 fallback、ViewModel 搜尋／篩選、收藏持久化、地名正規化與座標快取；另有 4 項 UI tests，涵蓋搜尋與等級／未分級篩選、收藏流程、詳細頁導覽及地圖 tab 切換。
+目前有 12 項單元測試，涵蓋疫情等級判定、疾管署等級解碼、API 成功快取、離線 fallback、ViewModel 搜尋／篩選、收藏持久化、新疫情通知比對、地名正規化與座標快取；另有 5 項 UI tests，涵蓋搜尋與等級／未分級篩選、收藏流程、通知 opt-in 控制、詳細頁導覽及地圖 tab 切換。
 
 ## Roadmap
 
@@ -95,7 +102,7 @@ xcodebuild test \
 - [x] 國家名稱正規化與座標快取
 - [x] 地圖 marker clustering
 - [x] 收藏地區
-- [ ] 收藏地區的新疫情通知
+- [x] 收藏地區的新疫情通知（app 更新資料時偵測）
 - [x] UI tests 與 VoiceOver accessibility audit
 
 ## 資料來源

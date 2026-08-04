@@ -18,6 +18,7 @@
 		2904501F26800F0100D044D5 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2904502026800F0200D044D5 /* MapViewController.swift */; };
 		B200000126800F0100D044D5 /* LocationResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = B200001126800F0200D044D5 /* LocationResolver.swift */; };
 		D100000126800F0100D044D5 /* FavoriteStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D100001126800F0200D044D5 /* FavoriteStore.swift */; };
+		D200000126800F0100D044D5 /* EpidemicNotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D200001126800F0200D044D5 /* EpidemicNotificationManager.swift */; };
 		A100000126800F0100D044D5 /* Epidemic.swift in Sources */ = {isa = PBXBuildFile; fileRef = A100001126800F0200D044D5 /* Epidemic.swift */; };
 		A100000226800F0100D044D5 /* EpidemicRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = A100001226800F0200D044D5 /* EpidemicRepository.swift */; };
 		A100000326800F0100D044D5 /* EpidemicListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A100001326800F0200D044D5 /* EpidemicListViewModel.swift */; };
@@ -58,6 +59,7 @@
 		2904502026800F0200D044D5 /* MapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 		B200001126800F0200D044D5 /* LocationResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationResolver.swift; sourceTree = "<group>"; };
 		D100001126800F0200D044D5 /* FavoriteStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteStore.swift; sourceTree = "<group>"; };
+		D200001126800F0200D044D5 /* EpidemicNotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpidemicNotificationManager.swift; sourceTree = "<group>"; };
 		A100001126800F0200D044D5 /* Epidemic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Epidemic.swift; sourceTree = "<group>"; };
 		A100001226800F0200D044D5 /* EpidemicRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpidemicRepository.swift; sourceTree = "<group>"; };
 		A100001326800F0200D044D5 /* EpidemicListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpidemicListViewModel.swift; sourceTree = "<group>"; };
@@ -130,6 +132,7 @@
 				2904502026800F0200D044D5 /* MapViewController.swift */,
 				B200001126800F0200D044D5 /* LocationResolver.swift */,
 				D100001126800F0200D044D5 /* FavoriteStore.swift */,
+				D200001126800F0200D044D5 /* EpidemicNotificationManager.swift */,
 				A100001126800F0200D044D5 /* Epidemic.swift */,
 				A100001226800F0200D044D5 /* EpidemicRepository.swift */,
 				A100001326800F0200D044D5 /* EpidemicListViewModel.swift */,
@@ -306,6 +309,7 @@
 				2904501F26800F0100D044D5 /* MapViewController.swift in Sources */,
 				B200000126800F0100D044D5 /* LocationResolver.swift in Sources */,
 				D100000126800F0100D044D5 /* FavoriteStore.swift in Sources */,
+				D200000126800F0100D044D5 /* EpidemicNotificationManager.swift in Sources */,
 				A100000126800F0100D044D5 /* Epidemic.swift in Sources */,
 				A100000226800F0100D044D5 /* EpidemicRepository.swift in Sources */,
 				A100000326800F0100D044D5 /* EpidemicListViewModel.swift in Sources */,

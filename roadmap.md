@@ -23,11 +23,12 @@
 - 為列表、搜尋、篩選、狀態畫面、詳細內容、地圖 marker／群組與操作按鈕補齊 accessibility identifier、label 與 hint。
 - 解析疾管署 `severity_level`，新增「未分級」篩選並停用沒有資料的等級，避免將空白誤解為疫情不嚴重。
 - 加入地區收藏：詳細頁可切換收藏，列表可只顯示收藏地區，並以 UserDefaults 持久化。
+- 加入通知 opt-in；app 更新資料時比對已看過項目，僅通知收藏地區的新疫情，首次啟用只建立基準。
 
 ## 驗證結果
 
 - iPhone 15、iOS 17.5 Simulator build 成功。
-- 11 項單元測試全部通過，0 failures：
+- 12 項單元測試全部通過，0 failures：
   - 疫情等級判定採用最高匹配等級。
   - API 成功後寫入快取。
   - 網路失敗時使用磁碟快取。
@@ -39,11 +40,13 @@
   - 解碼明確與未提供的疫情等級。
   - 收藏地區跨不同疫情持久化。
   - ViewModel 收藏地區篩選。
-- 4 項 UI tests 全部通過，0 failures：
+  - 通知追蹤只回傳收藏地區且尚未看過的新疫情。
+- 5 項 UI tests 全部通過，0 failures：
   - 搜尋與警示等級篩選。
   - 列表進入詳細頁。
   - 切換至地圖頁。
   - 從詳細頁收藏地區並於列表篩選。
+  - 通知 opt-in 控制顯示正常。
 - Smoke test 確認 app 可安裝、啟動並載入 CDC 資料；列表、搜尋列、篩選器與 tab bar 顯示正常，未發生 crash。
 - `project.pbxproj`、`Info.plist` 與 `git diff --check` 驗證通過。
 - 本機簽章可從 ignored 的 `Signing.local.xcconfig` 解析，commit 中沒有個人 Team ID。
@@ -58,4 +61,4 @@
 
 1. 人工完成搜尋、篩選、詳細頁、地圖 marker／callout 與離線模式操作檢查。
 2. 推送 `main`，確認 GitHub Actions 通過。
-3. 設計收藏地區的新疫情通知觸發條件與權限流程。
+3. 若需要完全即時通知，設計後端定期抓取 CDC 資料與 APNs 推播服務。

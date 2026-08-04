@@ -54,4 +54,10 @@ final class CovidAPIUITests: XCTestCase {
         XCTAssertTrue(app.staticTexts.matching(NSPredicate(format: "label CONTAINS '日本-腸病毒'")).firstMatch.waitForExistence(timeout: 2))
         XCTAssertFalse(app.staticTexts.matching(NSPredicate(format: "label CONTAINS '美國-沙門氏菌'")).firstMatch.exists)
     }
+
+    func testNotificationOptInControlExists() {
+        XCTAssertTrue(
+            app.buttons["epidemic.notifications.toggle"].waitForExistence(timeout: 5)
+        )
+    }
 }

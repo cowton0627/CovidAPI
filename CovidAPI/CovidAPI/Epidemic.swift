@@ -34,6 +34,10 @@ struct Epidemic: Codable, Equatable {
         let area = areaDescription?.trimmingCharacters(in: .whitespacesAndNewlines)
         return area.flatMap { $0.isEmpty ? nil : $0 } ?? LocationNameNormalizer.normalize(headline)
     }
+
+    var notificationIdentifier: String {
+        "\(headline)|\(effective.timeIntervalSince1970)"
+    }
 }
 
 enum AlertLevel: Int, CaseIterable {

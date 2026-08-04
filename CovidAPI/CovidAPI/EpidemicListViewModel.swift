@@ -40,6 +40,7 @@ final class EpidemicListViewModel {
 
     private let repository: EpidemicRepository
     private let favoriteStore: FavoriteStoreProtocol
+    private let notificationManager: EpidemicNotificationManaging
     private(set) var state: EpidemicListState = .loading
     private(set) var allEpidemics: [Epidemic] = []
     private(set) var visibleEpidemics: [Epidemic] = []
@@ -49,9 +50,14 @@ final class EpidemicListViewModel {
     private var filter: AlertFilter = .all
     private var showsFavoritesOnly = false
 
-    init(repository: EpidemicRepository = .shared, favoriteStore: FavoriteStoreProtocol = FavoriteStore.shared) {
+    init(
+        repository: EpidemicRepository = .shared,
+        favoriteStore: FavoriteStoreProtocol = FavoriteStore.shared,
+        notificationManager: EpidemicNotificationManaging = EpidemicNotificationManager.shared
+    ) {
         self.repository = repository
         self.favoriteStore = favoriteStore
+        self.notificationManager = notificationManager
     }
 
     func load() {
@@ -100,6 +106,9 @@ final class EpidemicListViewModel {
         allEpidemics = snapshot.epidemics.sorted { $0.effective > $1.effective }
         updatedAt = snapshot.updatedAt
         isShowingCachedData = snapshot.isFromCache
+        if !snapshot.isFromCache {
+            notificationManager.process(snapshot.epidemics)
+        }
         applyFilters()
     }
 
