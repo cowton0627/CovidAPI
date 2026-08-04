@@ -2,9 +2,9 @@
 
 ## 目前狀態
 
-更新日期：2026-08-03
+更新日期：2026-08-04
 
-資料層重構、離線支援與基礎品質檢查已完成，紀錄於 commit `2dc3431`（`重構資料層並新增離線快取與測試`）。國家名稱正規化與座標快取亦已實作、尚未提交。目前本機 `main` 比 `origin/main` 領先一個 commit，尚未推送。
+資料層重構、離線支援、地圖效能、UI tests、無障礙、未分級說明、地區收藏與 app 內新疫情通知均已完成。目前本機 `main` 比 `origin/main` 領先兩個 commits，尚未推送。
 
 ## 本次完成
 
@@ -53,12 +53,12 @@
 
 ## 已知限制
 
-- 自動化 smoke test 無法可靠操作 Simulator 內的 UIKit 控制項；搜尋輸入、篩選切換、詳細頁、地圖 marker 與 callout 仍需人工確認。
+- UI tests 已覆蓋搜尋、篩選、收藏、詳細頁與地圖 tab；地圖 marker／callout、通知權限提示與離線操作仍需人工確認。
 - Simulator 日誌出現 MapKit 定位與系統快取警告，但沒有 app crash 或程式層錯誤。
 - 本機沒有 iPhone 16 Simulator，因此本次使用 iPhone 15／iOS 17.5；CI 仍使用 README 與 workflow 指定的 iPhone 16。
 
 ## 下一步
 
-1. 人工完成搜尋、篩選、詳細頁、地圖 marker／callout 與離線模式操作檢查。
-2. 推送 `main`，確認 GitHub Actions 通過。
+1. 推送 `main`，確認 GitHub Actions 通過。
+2. 人工確認地圖 marker／callout、通知權限提示與離線模式。
 3. 若需要完全即時通知，設計後端定期抓取 CDC 資料與 APNs 推播服務。
