@@ -36,6 +36,15 @@ final class CovidAPIUITests: XCTestCase {
         XCTAssertTrue(app.staticTexts["epidemic.detail.description"].exists)
     }
 
+    func testSharesEpidemicFromDetail() {
+        let firstCell = app.cells["epidemic.cell.0"]
+        XCTAssertTrue(firstCell.waitForExistence(timeout: 5))
+        firstCell.tap()
+
+        app.buttons["epidemic.share"].tap()
+        XCTAssertTrue(app.otherElements["ActivityListView"].waitForExistence(timeout: 5))
+    }
+
     func testSwitchesToMap() {
         app.tabBars.buttons["地圖"].tap()
         let map = app.descendants(matching: .any)["epidemic.map"]

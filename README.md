@@ -18,6 +18,7 @@ iOS app 練習作品，串接行政院疾管署（CDC）旅遊疫情建議 Open 
 - 顯示完整疫情描述，內容過長可捲動
 - 標題置於 navigation bar，內文上方標註發布日
 - 可收藏或取消收藏該疫情地區；收藏會套用到同地區後續的其他疫情
+- 可透過 iOS 系統分享表單分享疫情等級、發布日、描述與 CDC 資料來源
 
 <p align="center">
   <img src="screenshots/detail.png" width="280" alt="詳細頁">
@@ -91,7 +92,7 @@ xcodebuild test \
   -destination 'platform=iOS Simulator,name=iPhone 16'
 ```
 
-目前有 12 項單元測試，涵蓋疫情等級判定、疾管署等級解碼、API 成功快取、離線 fallback、ViewModel 搜尋／篩選、收藏持久化、新疫情通知比對、地名正規化與座標快取；另有 9 項 UI tests，涵蓋搜尋與等級／未分級篩選、收藏篩選與管理、通知系統權限與 opt-in 狀態、詳細頁導覽、地圖 marker／callout 導覽及離線快取顯示。
+目前有 12 項單元測試，涵蓋疫情等級判定、疾管署等級解碼、API 成功快取、離線 fallback、ViewModel 搜尋／篩選、收藏持久化、新疫情通知比對、地名正規化與座標快取；另有 10 項 UI tests，涵蓋搜尋與等級／未分級篩選、收藏篩選與管理、通知系統權限與 opt-in 狀態、詳細頁導覽與分享、地圖 marker／callout 導覽及離線快取顯示。
 
 ## Roadmap
 

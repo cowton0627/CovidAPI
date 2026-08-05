@@ -35,13 +35,21 @@ class DetailViewController: UITableViewController {
         tableView.estimatedRowHeight = 300
         tableView.separatorStyle = .none
         tableView.accessibilityIdentifier = "epidemic.detail"
-        navigationItem.rightBarButtonItem = UIBarButtonItem(
+        let favoriteButton = UIBarButtonItem(
             image: nil,
             style: .plain,
             target: self,
             action: #selector(toggleFavorite)
         )
-        navigationItem.rightBarButtonItem?.accessibilityIdentifier = "epidemic.favorite.toggle"
+        favoriteButton.accessibilityIdentifier = "epidemic.favorite.toggle"
+        let shareButton = UIBarButtonItem(
+            barButtonSystemItem: .action,
+            target: self,
+            action: #selector(shareEpidemic)
+        )
+        shareButton.accessibilityIdentifier = "epidemic.share"
+        shareButton.accessibilityLabel = "分享疫情資訊"
+        navigationItem.rightBarButtonItems = [favoriteButton, shareButton]
         updateFavoriteButton()
     }
 
@@ -50,12 +58,31 @@ class DetailViewController: UITableViewController {
         updateFavoriteButton()
     }
 
+    @objc private func shareEpidemic(_ sender: UIBarButtonItem) {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy/MM/dd"
+        let level = AlertLevel.from(epidemic: epidemic).label
+        let text = """
+        \(epidemic.headline)
+        \(level)・發布日 \(formatter.string(from: epidemic.effective))
+
+        \(epidemic.description)
+
+        資料來源：衛生福利部疾病管制署
+        """
+        let sourceURL = URL(string: "https://www.cdc.gov.tw/TravelEpidemic/ExportJSON")!
+        let activity = UIActivityViewController(activityItems: [text, sourceURL], applicationActivities: nil)
+        activity.popoverPresentationController?.barButtonItem = sender
+        present(activity, animated: true)
+    }
+
     private func updateFavoriteButton() {
         let isFavorite = favoriteStore.contains(epidemic)
-        navigationItem.rightBarButtonItem?.image = UIImage(
+        let favoriteButton = navigationItem.rightBarButtonItems?.first
+        favoriteButton?.image = UIImage(
             systemName: isFavorite ? "star.fill" : "star"
         )
-        navigationItem.rightBarButtonItem?.accessibilityLabel = isFavorite ? "取消收藏地區" : "收藏地區"
+        favoriteButton?.accessibilityLabel = isFavorite ? "取消收藏地區" : "收藏地區"
     }
 
     // MARK: - Table view data source
