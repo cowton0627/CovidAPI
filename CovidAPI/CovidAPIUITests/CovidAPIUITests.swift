@@ -66,6 +66,20 @@ final class CovidAPIUITests: XCTestCase {
         XCTAssertTrue(app.tables["epidemic.detail"].waitForExistence(timeout: 2))
     }
 
+    func testFiltersMapByAlertLevel() {
+        app.tabBars.buttons["地圖"].tap()
+        let marker = app.descendants(matching: .any)["epidemic.map.marker.日本"]
+        XCTAssertTrue(marker.waitForExistence(timeout: 5))
+
+        let unknownFilter = app.buttons["未分級"]
+        XCTAssertTrue(unknownFilter.waitForExistence(timeout: 2))
+        unknownFilter.tap()
+        XCTAssertTrue(marker.waitForExistence(timeout: 2))
+
+        app.buttons["三級"].tap()
+        XCTAssertFalse(marker.waitForExistence(timeout: 2))
+    }
+
     func testShowsCachedDataWhenOffline() {
         app.terminate()
         app.launchArguments = ["--ui-testing", "--ui-testing-offline"]

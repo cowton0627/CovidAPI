@@ -31,9 +31,12 @@ class MapViewController: UIViewController {
     private let coordinateCache: CoordinateCacheProtocol = CoordinateCache()
     private let geocoder = CLGeocoder()
     var epidemics: [Epidemic] = []
+    private var allEpidemics: [Epidemic] = []
+    private var selectedFilter: AlertFilter = .all
     private var hasCenteredOnUser = false
     private var geocodingGeneration = 0
     private let statusLabel = UILabel()
+    private let filterControl = UISegmentedControl(items: AlertFilter.allCases.map(\.title))
 
     override func loadView() {
         view = mapView
@@ -67,6 +70,7 @@ class MapViewController: UIViewController {
             locationManager.requestWhenInUseAuthorization()
         }
 
+        configureFilterControl()
         configureStatusLabel()
         loadData()
     }
@@ -96,13 +100,51 @@ class MapViewController: UIViewController {
     }
 
     private func show(_ snapshot: EpidemicSnapshot) {
+        allEpidemics = snapshot.epidemics
+        updateFilterAvailability()
+        applyFilter()
+    }
+
+    private func applyFilter() {
         geocodingGeneration += 1
         geocoder.cancelGeocode()
         let annotations = mapView.annotations.filter { $0 is EpidemicAnnotation }
         mapView.removeAnnotations(annotations)
-        epidemics = snapshot.epidemics
+        epidemics = allEpidemics.filter(selectedFilter.matches)
+        guard !epidemics.isEmpty else {
+            statusLabel.text = "沒有符合此等級的疫情資料"
+            statusLabel.isHidden = false
+            return
+        }
         statusLabel.isHidden = true
         geocodeNext(index: 0, generation: geocodingGeneration)
+    }
+
+    private func configureFilterControl() {
+        filterControl.selectedSegmentIndex = selectedFilter.rawValue
+        filterControl.selectedSegmentTintColor = .systemOrange
+        filterControl.accessibilityIdentifier = "epidemic.map.filter"
+        filterControl.addTarget(self, action: #selector(filterChanged), for: .valueChanged)
+        filterControl.translatesAutoresizingMaskIntoConstraints = false
+        mapView.addSubview(filterControl)
+        NSLayoutConstraint.activate([
+            filterControl.leadingAnchor.constraint(equalTo: mapView.safeAreaLayoutGuide.leadingAnchor, constant: 12),
+            filterControl.trailingAnchor.constraint(equalTo: mapView.safeAreaLayoutGuide.trailingAnchor, constant: -12),
+            filterControl.topAnchor.constraint(equalTo: mapView.safeAreaLayoutGuide.topAnchor, constant: 8),
+            filterControl.heightAnchor.constraint(equalToConstant: 36)
+        ])
+    }
+
+    private func updateFilterAvailability() {
+        for filter in AlertFilter.allCases where filter != .all {
+            filterControl.setEnabled(allEpidemics.contains(where: filter.matches), forSegmentAt: filter.rawValue)
+        }
+    }
+
+    @objc private func filterChanged() {
+        guard let filter = AlertFilter(rawValue: filterControl.selectedSegmentIndex) else { return }
+        selectedFilter = filter
+        applyFilter()
     }
 
     private func configureStatusLabel() {
@@ -118,7 +160,7 @@ class MapViewController: UIViewController {
         mapView.addSubview(statusLabel)
         NSLayoutConstraint.activate([
             statusLabel.centerXAnchor.constraint(equalTo: mapView.centerXAnchor),
-            statusLabel.topAnchor.constraint(equalTo: mapView.safeAreaLayoutGuide.topAnchor, constant: 12),
+            statusLabel.topAnchor.constraint(equalTo: filterControl.bottomAnchor, constant: 12),
             statusLabel.widthAnchor.constraint(lessThanOrEqualTo: mapView.widthAnchor, multiplier: 0.8),
             statusLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 44)
         ])
