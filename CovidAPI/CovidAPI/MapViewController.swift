@@ -129,6 +129,12 @@ class MapViewController: UIViewController {
         let epidemic = epidemics[index]
         let locationName = LocationNameNormalizer.normalize(epidemic.headline)
 
+        if let coordinate = uiTestingCoordinate(for: locationName) {
+            addAnnotation(for: epidemic, coordinate: coordinate)
+            geocodeNext(index: index + 1, generation: generation)
+            return
+        }
+
         if let coordinate = coordinateCache.coordinate(for: locationName) {
             addAnnotation(for: epidemic, coordinate: coordinate)
             geocodeNext(index: index + 1, generation: generation)
@@ -151,6 +157,15 @@ class MapViewController: UIViewController {
         mapView.addAnnotation(EpidemicAnnotation(epidemic: epidemic, coordinate: coordinate))
     }
 
+    private func uiTestingCoordinate(for locationName: String) -> CLLocationCoordinate2D? {
+        guard ProcessInfo.processInfo.arguments.contains("--ui-testing") else { return nil }
+        switch locationName {
+        case "日本": return CLLocationCoordinate2D(latitude: 35.6762, longitude: 139.6503)
+        case "美國": return CLLocationCoordinate2D(latitude: 37.0902, longitude: -95.7129)
+        default: return nil
+        }
+    }
+
     private func makeCalloutDetailView(for ann: EpidemicAnnotation) -> UIView {
         let stack = UIStackView()
         stack.axis = .vertical
@@ -159,6 +174,7 @@ class MapViewController: UIViewController {
         stack.translatesAutoresizingMaskIntoConstraints = false
 
         let levelLabel = UILabel()
+        levelLabel.accessibilityIdentifier = "epidemic.map.callout.level"
         levelLabel.text = ann.alertLevel.label
         levelLabel.font = .preferredFont(forTextStyle: .headline)
         levelLabel.textColor = ann.alertLevel.color
@@ -167,12 +183,14 @@ class MapViewController: UIViewController {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy/MM/dd"
         let dateLabel = UILabel()
+        dateLabel.accessibilityIdentifier = "epidemic.map.callout.date"
         dateLabel.text = "發布日：\(formatter.string(from: ann.epidemic.effective))"
         dateLabel.font = .preferredFont(forTextStyle: .subheadline)
         dateLabel.textColor = .secondaryLabel
         dateLabel.adjustsFontForContentSizeCategory = true
 
         let descLabel = UILabel()
+        descLabel.accessibilityIdentifier = "epidemic.map.callout.description"
         descLabel.text = String(ann.epidemic.description.prefix(120))
         descLabel.font = .preferredFont(forTextStyle: .footnote)
         descLabel.textColor = .label
@@ -220,8 +238,11 @@ extension MapViewController: MKMapViewDelegate {
         view.detailCalloutAccessoryView = makeCalloutDetailView(for: epAnn)
         view.rightCalloutAccessoryView = UIButton(type: .detailDisclosure)
         view.accessibilityLabel = "\(epAnn.epidemic.headline)，\(epAnn.alertLevel.label)"
+        let locationName = LocationNameNormalizer.normalize(epAnn.epidemic.headline)
+        view.accessibilityIdentifier = "epidemic.map.marker.\(locationName)"
         view.accessibilityHint = "點兩下顯示摘要與詳細資訊按鈕"
         view.rightCalloutAccessoryView?.accessibilityLabel = "查看完整疫情資訊"
+        view.rightCalloutAccessoryView?.accessibilityIdentifier = "epidemic.map.callout.detail"
         return view
     }
 

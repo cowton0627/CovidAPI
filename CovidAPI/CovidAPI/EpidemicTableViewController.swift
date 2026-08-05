@@ -55,7 +55,6 @@ class EpidemicTableViewController: UITableViewController {
         filterControl.addTarget(self, action: #selector(filterChanged), for: .valueChanged)
         filterControl.selectedSegmentTintColor = .systemOrange
         filterControl.accessibilityIdentifier = "epidemic.filter"
-        navigationItem.titleView = filterControl
         navigationItem.leftBarButtonItem = UIBarButtonItem(
             image: UIImage(systemName: "star"),
             style: .plain,
@@ -85,11 +84,29 @@ class EpidemicTableViewController: UITableViewController {
         }
         viewModel.load()
     }
-    
+
     
     override func numberOfSections(in tableView: UITableView) -> Int {
         // #warning Incomplete implementation, return the number of sections
         return 1
+    }
+
+    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        52
+    }
+
+    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let header = UIView()
+        header.backgroundColor = .systemBackground
+        filterControl.translatesAutoresizingMaskIntoConstraints = false
+        header.addSubview(filterControl)
+        NSLayoutConstraint.activate([
+            filterControl.leadingAnchor.constraint(equalTo: header.leadingAnchor, constant: 12),
+            filterControl.trailingAnchor.constraint(equalTo: header.trailingAnchor, constant: -12),
+            filterControl.topAnchor.constraint(equalTo: header.topAnchor, constant: 8),
+            filterControl.bottomAnchor.constraint(equalTo: header.bottomAnchor, constant: -8)
+        ])
+        return header
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

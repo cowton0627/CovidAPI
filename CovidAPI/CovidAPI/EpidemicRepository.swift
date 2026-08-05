@@ -118,6 +118,12 @@ final class EpidemicRepository {
         guard ProcessInfo.processInfo.arguments.contains("--ui-testing") else {
             return EpidemicRepository()
         }
+        if ProcessInfo.processInfo.arguments.contains("--ui-testing-offline") {
+            return EpidemicRepository(
+                apiClient: UITestingOfflineAPIClient(),
+                cache: UITestingCache(epidemics: UITestingFixture.epidemics)
+            )
+        }
         return EpidemicRepository(apiClient: UITestingAPIClient(), cache: UITestingCache())
     }()
 
@@ -196,16 +202,34 @@ final class EpidemicRepository {
 
 private final class UITestingAPIClient: EpidemicAPIClientProtocol {
     func fetch(completion: @escaping (Result<[Epidemic], Error>) -> Void) {
-        let date = Date(timeIntervalSince1970: 1_700_000_000)
-        completion(.success([
-            Epidemic(headline: "日本-腸病毒", effective: date, description: "日本疫情測試資料", areaDescription: "日本"),
-            Epidemic(headline: "美國-沙門氏菌感染症", effective: date, description: "美國疫情測試資料", severityLevel: 3, areaDescription: "美國")
-        ]))
+        completion(.success(UITestingFixture.epidemics))
     }
 }
 
 private final class UITestingCache: EpidemicCacheProtocol {
-    var modifiedAt: Date? { nil }
-    func load() -> [Epidemic]? { nil }
+    private let epidemics: [Epidemic]?
+
+    init(epidemics: [Epidemic]? = nil) {
+        self.epidemics = epidemics
+    }
+
+    var modifiedAt: Date? { Date(timeIntervalSince1970: 1_700_000_000) }
+    func load() -> [Epidemic]? { epidemics }
     func save(_ epidemics: [Epidemic]) {}
+}
+
+private final class UITestingOfflineAPIClient: EpidemicAPIClientProtocol {
+    func fetch(completion: @escaping (Result<[Epidemic], Error>) -> Void) {
+        completion(.failure(EpidemicRepositoryError.network(URLError(.notConnectedToInternet))))
+    }
+}
+
+private enum UITestingFixture {
+    static let epidemics: [Epidemic] = {
+        let date = Date(timeIntervalSince1970: 1_700_000_000)
+        return [
+            Epidemic(headline: "日本-腸病毒", effective: date, description: "日本疫情測試資料", areaDescription: "日本"),
+            Epidemic(headline: "美國-沙門氏菌感染症", effective: date, description: "美國疫情測試資料", severityLevel: 3, areaDescription: "美國")
+        ]
+    }()
 }

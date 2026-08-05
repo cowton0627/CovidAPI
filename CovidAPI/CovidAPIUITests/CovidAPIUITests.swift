@@ -42,6 +42,32 @@ final class CovidAPIUITests: XCTestCase {
         XCTAssertTrue(map.waitForExistence(timeout: 5))
     }
 
+    func testOpensMapMarkerCalloutAndDetail() {
+        app.tabBars.buttons["地圖"].tap()
+
+        let marker = app.descendants(matching: .any)["epidemic.map.marker.日本"]
+        XCTAssertTrue(marker.waitForExistence(timeout: 5))
+        marker.tap()
+
+        XCTAssertTrue(app.staticTexts["epidemic.map.callout.level"].waitForExistence(timeout: 2))
+        XCTAssertTrue(app.staticTexts["epidemic.map.callout.date"].exists)
+        XCTAssertTrue(app.staticTexts["epidemic.map.callout.description"].exists)
+
+        app.buttons["epidemic.map.callout.detail"].tap()
+        XCTAssertTrue(app.tables["epidemic.detail"].waitForExistence(timeout: 2))
+    }
+
+    func testShowsCachedDataWhenOffline() {
+        app.terminate()
+        app.launchArguments = ["--ui-testing", "--ui-testing-offline"]
+        app.launch()
+
+        XCTAssertTrue(app.cells["epidemic.cell.0"].waitForExistence(timeout: 5))
+        let footer = app.staticTexts["epidemic.updatedAt"]
+        XCTAssertTrue(footer.waitForExistence(timeout: 2))
+        XCTAssertTrue(footer.label.contains("離線資料"))
+    }
+
     func testFavoritesLocationFromDetail() {
         let firstCell = app.cells["epidemic.cell.0"]
         XCTAssertTrue(firstCell.waitForExistence(timeout: 5))
@@ -59,5 +85,34 @@ final class CovidAPIUITests: XCTestCase {
         XCTAssertTrue(
             app.buttons["epidemic.notifications.toggle"].waitForExistence(timeout: 5)
         )
+    }
+
+    func testEnablesNotificationsAfterSystemPermissionIsGranted() {
+        addUIInterruptionMonitor(withDescription: "通知權限") { alert in
+            let allowButton = alert.buttons["Allow"]
+            if allowButton.exists {
+                allowButton.tap()
+            } else if alert.buttons["允許"].exists {
+                alert.buttons["允許"].tap()
+            } else if alert.buttons.count > 0 {
+                alert.buttons.element(boundBy: alert.buttons.count - 1).tap()
+            } else {
+                return false
+            }
+            return true
+        }
+
+        let toggle = app.buttons["epidemic.notifications.toggle"]
+        XCTAssertTrue(toggle.waitForExistence(timeout: 5))
+        if toggle.label == "關閉收藏地區新疫情通知" {
+            toggle.tap()
+        }
+        toggle.tap()
+        app.tap()
+
+        let enabledToggle = app.buttons.matching(
+            NSPredicate(format: "identifier == %@ AND label == %@", "epidemic.notifications.toggle", "關閉收藏地區新疫情通知")
+        ).firstMatch
+        XCTAssertTrue(enabledToggle.waitForExistence(timeout: 5))
     }
 }
