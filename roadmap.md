@@ -28,6 +28,8 @@
 - 新增地圖 marker／callout／詳細頁導覽與離線快取顯示 UI tests，並以固定座標 fixture 避免 CI 依賴 geocoding 網路。
 - 將首頁疫情等級篩選器移到列表的固定 section header，避免 navigation bar 空間不足導致「未分級」截斷。
 - 新增通知系統權限 UI test，驗證首次授權後 app 會切換為通知已啟用狀態。
+- 新增收藏地區管理頁：依地區整合最新疫情與筆數，支援進入詳細頁與左滑移除。
+- 首頁星號改為收藏選單，集中提供「只顯示收藏地區」與「管理收藏地區」。
 
 ## 驗證結果
 
@@ -45,7 +47,7 @@
   - 收藏地區跨不同疫情持久化。
   - ViewModel 收藏地區篩選。
   - 通知追蹤只回傳收藏地區且尚未看過的新疫情。
-- 8 項 UI tests 全部通過，0 failures：
+- 9 項 UI tests 全部通過，0 failures：
   - 搜尋與警示等級篩選。
   - 列表進入詳細頁。
   - 切換至地圖頁。
@@ -54,6 +56,7 @@
   - 通知系統授權提示可允許，授權後 app 狀態正確更新。
   - 地圖 marker 可開啟 callout，callout 內容與詳細頁導覽正常。
   - 網路失敗時仍會顯示快取資料與「離線資料」來源標示。
+  - 可進入收藏管理頁、左滑移除地區並顯示空狀態。
 - Smoke test 確認 app 可安裝、啟動並載入 CDC 資料；列表、搜尋列、篩選器與 tab bar 顯示正常，未發生 crash。
 - `project.pbxproj`、`Info.plist` 與 `git diff --check` 驗證通過。
 - 本機簽章可從 ignored 的 `Signing.local.xcconfig` 解析，commit 中沒有個人 Team ID。

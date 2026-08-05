@@ -76,9 +76,27 @@ final class CovidAPIUITests: XCTestCase {
         app.buttons["收藏地區"].tap()
         app.navigationBars.buttons.element(boundBy: 0).tap()
         app.buttons["epidemic.favorites.filter"].tap()
+        app.buttons["只顯示收藏地區"].tap()
 
         XCTAssertTrue(app.staticTexts.matching(NSPredicate(format: "label CONTAINS '日本-腸病毒'")).firstMatch.waitForExistence(timeout: 2))
         XCTAssertFalse(app.staticTexts.matching(NSPredicate(format: "label CONTAINS '美國-沙門氏菌'")).firstMatch.exists)
+    }
+
+    func testManagesFavoriteLocations() {
+        let firstCell = app.cells["epidemic.cell.0"]
+        XCTAssertTrue(firstCell.waitForExistence(timeout: 5))
+        firstCell.tap()
+        app.buttons["收藏地區"].tap()
+        app.navigationBars.buttons.element(boundBy: 0).tap()
+
+        app.buttons["epidemic.favorites.filter"].tap()
+        app.buttons["管理收藏地區"].tap()
+
+        let favorite = app.cells["epidemic.favorite.location.日本"]
+        XCTAssertTrue(favorite.waitForExistence(timeout: 2))
+        favorite.swipeLeft()
+        app.buttons["移除 日本 收藏"].tap()
+        XCTAssertTrue(app.staticTexts["epidemic.favorites.empty"].waitForExistence(timeout: 2))
     }
 
     func testNotificationOptInControlExists() {

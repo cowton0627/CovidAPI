@@ -57,12 +57,10 @@ class EpidemicTableViewController: UITableViewController {
         filterControl.accessibilityIdentifier = "epidemic.filter"
         navigationItem.leftBarButtonItem = UIBarButtonItem(
             image: UIImage(systemName: "star"),
-            style: .plain,
-            target: self,
-            action: #selector(toggleFavoritesFilter)
+            menu: makeFavoritesMenu()
         )
         navigationItem.leftBarButtonItem?.accessibilityIdentifier = "epidemic.favorites.filter"
-        updateFavoritesButton()
+        updateFavoritesMenu()
         navigationItem.rightBarButtonItem = UIBarButtonItem(
             image: nil,
             style: .plain,
@@ -174,20 +172,41 @@ class EpidemicTableViewController: UITableViewController {
     @objc private func toggleFavoritesFilter() {
         showsFavoritesOnly.toggle()
         viewModel.setShowsFavoritesOnly(showsFavoritesOnly)
-        updateFavoritesButton()
+        updateFavoritesMenu()
     }
 
     @objc private func favoritesDidChange() {
         viewModel.favoritesDidChange()
     }
 
-    private func updateFavoritesButton() {
+    private func updateFavoritesMenu() {
         navigationItem.leftBarButtonItem?.image = UIImage(
             systemName: showsFavoritesOnly ? "star.fill" : "star"
         )
-        navigationItem.leftBarButtonItem?.accessibilityLabel = showsFavoritesOnly
-            ? "顯示全部疫情"
-            : "只顯示收藏地區"
+        navigationItem.leftBarButtonItem?.accessibilityLabel = "收藏與篩選"
+        navigationItem.leftBarButtonItem?.menu = makeFavoritesMenu()
+    }
+
+    private func makeFavoritesMenu() -> UIMenu {
+        let filter = UIAction(
+            title: "只顯示收藏地區",
+            image: UIImage(systemName: showsFavoritesOnly ? "star.fill" : "star"),
+            state: showsFavoritesOnly ? .on : .off
+        ) { [weak self] _ in
+            self?.toggleFavoritesFilter()
+        }
+        let manage = UIAction(
+            title: "管理收藏地區",
+            image: UIImage(systemName: "list.bullet")
+        ) { [weak self] _ in
+            self?.showFavoritesManager()
+        }
+        return UIMenu(children: [filter, manage])
+    }
+
+    private func showFavoritesManager() {
+        let controller = FavoritesViewController(epidemics: viewModel.allEpidemics)
+        navigationController?.pushViewController(controller, animated: true)
     }
 
     @objc private func toggleNotifications() {
