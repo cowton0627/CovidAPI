@@ -105,6 +105,26 @@ final class CovidAPIUITests: XCTestCase {
         XCTAssertFalse(marker.waitForExistence(timeout: 2))
     }
 
+    func testFiltersMapToFavoriteLocations() {
+        let firstCell = app.cells["epidemic.cell.0"]
+        XCTAssertTrue(firstCell.waitForExistence(timeout: 5))
+        firstCell.tap()
+        app.buttons["收藏地區"].tap()
+        app.tabBars.buttons["地圖"].tap()
+
+        let japanMarker = app.descendants(matching: .any)["epidemic.map.marker.日本"]
+        XCTAssertTrue(japanMarker.waitForExistence(timeout: 5))
+
+        app.buttons["epidemic.map.favorites"].tap()
+        app.buttons["只顯示收藏地區"].tap()
+
+        XCTAssertTrue(japanMarker.waitForExistence(timeout: 2))
+        app.buttons["三級"].tap()
+        let emptyStatus = app.staticTexts["epidemic.map.status"]
+        XCTAssertTrue(emptyStatus.waitForExistence(timeout: 2))
+        XCTAssertEqual(emptyStatus.label, "沒有符合此等級的收藏地區疫情")
+    }
+
     func testShowsCachedDataWhenOffline() {
         app.terminate()
         app.launchArguments = ["--ui-testing", "--ui-testing-offline"]

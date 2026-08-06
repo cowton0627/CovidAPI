@@ -28,11 +28,13 @@ class MapViewController: UIViewController {
     let mapView = MKMapView()
     let locationManager = CLLocationManager()
     private let repository = EpidemicRepository.shared
+    private let favoriteStore: FavoriteStoreProtocol = FavoriteStore.shared
     private let coordinateCache: CoordinateCacheProtocol = CoordinateCache()
     private let geocoder = CLGeocoder()
     var epidemics: [Epidemic] = []
     private var allEpidemics: [Epidemic] = []
     private var selectedFilter: AlertFilter = .all
+    private var showsFavoritesOnly = false
     private var hasCenteredOnUser = false
     private var geocodingGeneration = 0
     private let statusLabel = UILabel()
@@ -65,6 +67,19 @@ class MapViewController: UIViewController {
             action: #selector(reload)
         )
         navigationItem.rightBarButtonItem?.accessibilityLabel = "重新整理疫情地圖"
+        navigationItem.leftBarButtonItem = UIBarButtonItem(
+            image: UIImage(systemName: "star"),
+            menu: makeFavoritesMenu()
+        )
+        navigationItem.leftBarButtonItem?.accessibilityIdentifier = "epidemic.map.favorites"
+        updateFavoritesMenu()
+
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(favoritesDidChange),
+            name: .epidemicFavoritesDidChange,
+            object: nil
+        )
 
         if !isUITesting {
             locationManager.delegate = self
@@ -86,7 +101,9 @@ class MapViewController: UIViewController {
         loadViewIfNeeded()
         pendingFocusIdentifier = epidemic.notificationIdentifier
         selectedFilter = .all
+        showsFavoritesOnly = false
         filterControl.selectedSegmentIndex = AlertFilter.all.rawValue
+        updateFavoritesMenu()
         if !allEpidemics.isEmpty {
             applyFilter()
         }
@@ -122,9 +139,13 @@ class MapViewController: UIViewController {
         geocoder.cancelGeocode()
         let annotations = mapView.annotations.filter { $0 is EpidemicAnnotation }
         mapView.removeAnnotations(annotations)
-        epidemics = allEpidemics.filter(selectedFilter.matches)
+        epidemics = allEpidemics.filter {
+            selectedFilter.matches($0) && (!showsFavoritesOnly || favoriteStore.contains($0))
+        }
         guard !epidemics.isEmpty else {
-            statusLabel.text = "沒有符合此等級的疫情資料"
+            statusLabel.text = showsFavoritesOnly
+                ? "沒有符合此等級的收藏地區疫情"
+                : "沒有符合此等級的疫情資料"
             statusLabel.isHidden = false
             return
         }
@@ -157,6 +178,46 @@ class MapViewController: UIViewController {
         guard let filter = AlertFilter(rawValue: filterControl.selectedSegmentIndex) else { return }
         selectedFilter = filter
         applyFilter()
+    }
+
+    @objc private func favoritesDidChange() {
+        if showsFavoritesOnly {
+            applyFilter()
+        }
+        updateFavoritesMenu()
+    }
+
+    private func toggleFavoritesFilter() {
+        showsFavoritesOnly.toggle()
+        updateFavoritesMenu()
+        applyFilter()
+    }
+
+    private func updateFavoritesMenu() {
+        navigationItem.leftBarButtonItem?.image = UIImage(
+            systemName: showsFavoritesOnly ? "star.fill" : "star"
+        )
+        navigationItem.leftBarButtonItem?.accessibilityLabel = "地圖收藏與篩選"
+        navigationItem.leftBarButtonItem?.menu = makeFavoritesMenu()
+    }
+
+    private func makeFavoritesMenu() -> UIMenu {
+        let filter = UIAction(
+            title: "只顯示收藏地區",
+            image: UIImage(systemName: showsFavoritesOnly ? "star.fill" : "star"),
+            state: showsFavoritesOnly ? .on : .off
+        ) { [weak self] _ in
+            self?.toggleFavoritesFilter()
+        }
+        let manage = UIAction(
+            title: "管理收藏地區",
+            image: UIImage(systemName: "list.bullet")
+        ) { [weak self] _ in
+            guard let self = self else { return }
+            let controller = FavoritesViewController(epidemics: self.allEpidemics)
+            self.navigationController?.pushViewController(controller, animated: true)
+        }
+        return UIMenu(children: [filter, manage])
     }
 
     private func configureStatusLabel() {
