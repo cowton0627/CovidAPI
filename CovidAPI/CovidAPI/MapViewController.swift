@@ -37,6 +37,7 @@ class MapViewController: UIViewController {
     private var geocodingGeneration = 0
     private let statusLabel = UILabel()
     private let filterControl = UISegmentedControl(items: AlertFilter.allCases.map(\.title))
+    private var pendingFocusIdentifier: String?
 
     override func loadView() {
         view = mapView
@@ -79,6 +80,17 @@ class MapViewController: UIViewController {
         let epidemicAnnotations = mapView.annotations.filter { $0 is EpidemicAnnotation }
         mapView.removeAnnotations(epidemicAnnotations)
         loadData(forceRefresh: true)
+    }
+
+    func focus(on epidemic: Epidemic) {
+        loadViewIfNeeded()
+        pendingFocusIdentifier = epidemic.notificationIdentifier
+        selectedFilter = .all
+        filterControl.selectedSegmentIndex = AlertFilter.all.rawValue
+        if !allEpidemics.isEmpty {
+            applyFilter()
+        }
+        focusPendingAnnotationIfAvailable()
     }
 
     private func loadData(forceRefresh: Bool = false) {
@@ -196,7 +208,31 @@ class MapViewController: UIViewController {
     }
 
     private func addAnnotation(for epidemic: Epidemic, coordinate: CLLocationCoordinate2D) {
-        mapView.addAnnotation(EpidemicAnnotation(epidemic: epidemic, coordinate: coordinate))
+        let annotation = EpidemicAnnotation(epidemic: epidemic, coordinate: coordinate)
+        mapView.addAnnotation(annotation)
+        focusPendingAnnotationIfAvailable()
+    }
+
+    private func focusPendingAnnotationIfAvailable() {
+        guard let identifier = pendingFocusIdentifier,
+              let annotation = mapView.annotations.compactMap({ $0 as? EpidemicAnnotation }).first(where: {
+                  $0.epidemic.notificationIdentifier == identifier
+              }) else { return }
+        let region = MKCoordinateRegion(
+            center: annotation.coordinate,
+            latitudinalMeters: 3_000_000,
+            longitudinalMeters: 3_000_000
+        )
+        mapView.setRegion(region, animated: false)
+    }
+
+    private func selectPendingAnnotationIfAvailable() {
+        guard let identifier = pendingFocusIdentifier,
+              let annotation = mapView.annotations.compactMap({ $0 as? EpidemicAnnotation }).first(where: {
+                  $0.epidemic.notificationIdentifier == identifier
+              }) else { return }
+        pendingFocusIdentifier = nil
+        mapView.selectAnnotation(annotation, animated: true)
     }
 
     private func uiTestingCoordinate(for locationName: String) -> CLLocationCoordinate2D? {
@@ -249,6 +285,11 @@ class MapViewController: UIViewController {
 }
 
 extension MapViewController: MKMapViewDelegate {
+    func mapViewDidFinishRenderingMap(_ mapView: MKMapView, fullyRendered: Bool) {
+        guard fullyRendered else { return }
+        selectPendingAnnotationIfAvailable()
+    }
+
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         if annotation is MKUserLocation { return nil }
         if let cluster = annotation as? MKClusterAnnotation {

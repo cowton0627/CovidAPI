@@ -45,6 +45,17 @@ final class CovidAPIUITests: XCTestCase {
         XCTAssertTrue(app.otherElements["ActivityListView"].waitForExistence(timeout: 5))
     }
 
+    func testShowsListEpidemicOnMap() {
+        let firstCell = app.cells["epidemic.cell.0"]
+        XCTAssertTrue(firstCell.waitForExistence(timeout: 5))
+        firstCell.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
+
+        app.buttons["epidemic.detail.showOnMap"].tap()
+        XCTAssertTrue(app.descendants(matching: .any)["epidemic.map"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.descendants(matching: .any)["epidemic.map.marker.日本"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.staticTexts["epidemic.map.callout.level"].waitForExistence(timeout: 2))
+    }
+
     func testSwitchesToMap() {
         app.tabBars.buttons["地圖"].tap()
         let map = app.descendants(matching: .any)["epidemic.map"]

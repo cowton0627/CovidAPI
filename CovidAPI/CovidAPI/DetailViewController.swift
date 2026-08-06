@@ -50,6 +50,7 @@ class DetailViewController: UITableViewController {
         shareButton.accessibilityIdentifier = "epidemic.share"
         shareButton.accessibilityLabel = "分享疫情資訊"
         navigationItem.rightBarButtonItems = [favoriteButton, shareButton]
+        configureMapButton()
         updateFavoriteButton()
     }
 
@@ -74,6 +75,35 @@ class DetailViewController: UITableViewController {
         let activity = UIActivityViewController(activityItems: [text, sourceURL], applicationActivities: nil)
         activity.popoverPresentationController?.barButtonItem = sender
         present(activity, animated: true)
+    }
+
+    @objc private func showOnMap() {
+        guard let tabBarController = tabBarController,
+              let mapNavigationController = tabBarController.viewControllers?.last as? UINavigationController,
+              let mapController = mapNavigationController.viewControllers.first as? MapViewController else { return }
+        tabBarController.selectedViewController = mapNavigationController
+        mapNavigationController.popToRootViewController(animated: false)
+        mapController.focus(on: epidemic)
+    }
+
+    private func configureMapButton() {
+        let button = UIButton(type: .system)
+        button.setTitle("在地圖查看", for: .normal)
+        button.setImage(UIImage(systemName: "map"), for: .normal)
+        button.titleLabel?.font = .preferredFont(forTextStyle: .headline)
+        button.titleLabel?.adjustsFontForContentSizeCategory = true
+        button.accessibilityIdentifier = "epidemic.detail.showOnMap"
+        button.addTarget(self, action: #selector(showOnMap), for: .touchUpInside)
+        button.translatesAutoresizingMaskIntoConstraints = false
+
+        let container = UIView(frame: CGRect(x: 0, y: 0, width: tableView.bounds.width, height: 64))
+        container.addSubview(button)
+        NSLayoutConstraint.activate([
+            button.centerXAnchor.constraint(equalTo: container.centerXAnchor),
+            button.centerYAnchor.constraint(equalTo: container.centerYAnchor),
+            button.heightAnchor.constraint(greaterThanOrEqualToConstant: 44)
+        ])
+        tableView.tableFooterView = container
     }
 
     private func updateFavoriteButton() {
