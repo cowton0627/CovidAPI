@@ -20,6 +20,7 @@ class EpidemicTableViewController: UITableViewController {
     private let filterControl = UISegmentedControl(items: AlertFilter.allCases.map(\.title))
     private let notificationManager = EpidemicNotificationManager.shared
     private var showsFavoritesOnly = false
+    private var pendingNotificationIdentifier: String?
    
     @IBSegueAction func showDetail(_ coder: NSCoder) -> DetailViewController? {
         let controller =  DetailViewController(coder: coder)
@@ -76,11 +77,48 @@ class EpidemicTableViewController: UITableViewController {
             name: .epidemicFavoritesDidChange,
             object: nil
         )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(epidemicNotificationSelected(_:)),
+            name: .epidemicNotificationSelected,
+            object: nil
+        )
 
         viewModel.onChange = { [weak self] in
             self?.render()
         }
         viewModel.load()
+        configureUITestingNotificationRoute()
+    }
+
+    @objc private func epidemicNotificationSelected(_ notification: Notification) {
+        guard let identifier = EpidemicNotificationRoute.identifier(from: notification.userInfo ?? [:]) else { return }
+        pendingNotificationIdentifier = identifier
+        openPendingNotificationIfAvailable()
+    }
+
+    private func configureUITestingNotificationRoute() {
+        let arguments = ProcessInfo.processInfo.arguments
+        guard let flagIndex = arguments.firstIndex(of: "--ui-testing-notification"),
+              arguments.indices.contains(flagIndex + 1) else { return }
+        pendingNotificationIdentifier = arguments[flagIndex + 1]
+    }
+
+    private func openPendingNotificationIfAvailable() {
+        guard let identifier = pendingNotificationIdentifier,
+              let epidemic = viewModel.allEpidemics.first(where: { $0.notificationIdentifier == identifier }),
+              let detail = storyboard?.instantiateViewController(withIdentifier: "DetailViewController") as? DetailViewController else { return }
+        pendingNotificationIdentifier = nil
+        showsFavoritesOnly = false
+        searchController.searchBar.text = nil
+        filterControl.selectedSegmentIndex = AlertFilter.all.rawValue
+        viewModel.setSearchQuery("")
+        viewModel.setFilter(.all)
+        viewModel.setShowsFavoritesOnly(false)
+        detail.epidemic = epidemic
+        detail.favoriteStore = FavoriteStore.shared
+        navigationController?.popToRootViewController(animated: false)
+        navigationController?.pushViewController(detail, animated: true)
     }
 
     
@@ -272,6 +310,7 @@ class EpidemicTableViewController: UITableViewController {
                 retryAction: { [weak self] in self?.viewModel.refresh() }
             )
         }
+        openPendingNotificationIfAvailable()
     }
 
     private func updateFilterAvailability() {

@@ -245,6 +245,16 @@ final class EpidemicTests: XCTestCase {
         )
     }
 
+    func testNotificationRouteRoundTripsEpidemicIdentifier() {
+        let epidemic = makeEpidemic(headline: "日本-新疫情")
+
+        let identifier = EpidemicNotificationRoute.identifier(
+            from: EpidemicNotificationRoute.userInfo(for: epidemic)
+        )
+
+        XCTAssertEqual(identifier, epidemic.notificationIdentifier)
+    }
+
     func testLocationNameNormalizerUsesKnownAliasAndRemovesAlertText() {
         XCTAssertEqual(LocationNameNormalizer.normalize("中國大陸第三級旅遊疫情警告"), "中國")
         XCTAssertEqual(LocationNameNormalizer.normalize("日本－第二級警示：登革熱"), "日本")

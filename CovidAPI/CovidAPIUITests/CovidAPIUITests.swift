@@ -56,6 +56,20 @@ final class CovidAPIUITests: XCTestCase {
         XCTAssertTrue(app.staticTexts["epidemic.map.callout.level"].waitForExistence(timeout: 2))
     }
 
+    func testOpensEpidemicFromNotificationRoute() {
+        app.terminate()
+        app.launchArguments = [
+            "--ui-testing",
+            "--ui-testing-notification",
+            "日本-腸病毒|1700000000.0"
+        ]
+        app.launch()
+
+        XCTAssertTrue(app.tables["epidemic.detail"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.navigationBars["日本-腸病毒"].exists)
+        XCTAssertTrue(app.staticTexts["epidemic.detail.description"].exists)
+    }
+
     func testSwitchesToMap() {
         app.tabBars.buttons["地圖"].tap()
         let map = app.descendants(matching: .any)["epidemic.map"]

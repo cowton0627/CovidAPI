@@ -1,6 +1,22 @@
 import Foundation
 import UserNotifications
 
+extension Notification.Name {
+    static let epidemicNotificationSelected = Notification.Name("epidemicNotificationSelected")
+}
+
+enum EpidemicNotificationRoute {
+    static let identifierKey = "epidemicIdentifier"
+
+    static func userInfo(for epidemic: Epidemic) -> [AnyHashable: Any] {
+        [identifierKey: epidemic.notificationIdentifier]
+    }
+
+    static func identifier(from userInfo: [AnyHashable: Any]) -> String? {
+        userInfo[identifierKey] as? String
+    }
+}
+
 protocol EpidemicNotificationManaging: AnyObject {
     var isEnabled: Bool { get }
     func setEnabled(
@@ -100,6 +116,7 @@ final class EpidemicNotificationManager: EpidemicNotificationManaging {
             content.title = "收藏地區有新疫情資訊"
             content.body = epidemic.headline
             content.sound = .default
+            content.userInfo = EpidemicNotificationRoute.userInfo(for: epidemic)
             let request = UNNotificationRequest(
                 identifier: epidemic.notificationIdentifier,
                 content: content,
