@@ -37,6 +37,7 @@ iOS app 練習作品，串接行政院疾管署（CDC）旅遊疫情建議 Open 
 - 可依第一、二、三級與未分級篩選 markers，沒有資料的等級會自動停用
 - 可只顯示收藏地區，或從地圖直接進入收藏管理頁
 - 定位單一疫情或手動移動地圖後，可一鍵重新框選目前篩選結果的全部 markers
+- 地圖底部顯示資料來源與更新時間，離線快取會明確標示為「離線資料」
 
 <p align="center">
   <img src="screenshots/map.png" width="280" alt="地圖頁">
@@ -97,7 +98,7 @@ xcodebuild test \
   -destination 'platform=iOS Simulator,name=iPhone 16'
 ```
 
-目前有 13 項單元測試，涵蓋疫情等級判定、疾管署等級解碼、API 成功快取、離線 fallback、ViewModel 搜尋／篩選、收藏持久化、新疫情通知比對與 payload 路由、地名正規化與座標快取；另有 15 項 UI tests，涵蓋列表與地圖等級／收藏篩選、收藏管理、通知系統權限與 opt-in／點擊導覽、詳細頁導覽／分享／地圖定位與全覽、地圖 marker／callout 導覽及離線快取顯示。
+目前有 13 項單元測試，涵蓋疫情等級判定、疾管署等級解碼、API 成功快取、離線 fallback、ViewModel 搜尋／篩選、收藏持久化、新疫情通知比對與 payload 路由、地名正規化與座標快取；另有 16 項 UI tests，涵蓋列表與地圖等級／收藏篩選、收藏管理、通知系統權限與 opt-in／點擊導覽、詳細頁導覽／分享／地圖定位與全覽、地圖 marker／callout 導覽，以及列表與地圖的離線快取來源標示。
 
 ## Roadmap
 

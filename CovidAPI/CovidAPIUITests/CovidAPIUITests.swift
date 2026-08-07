@@ -150,6 +150,18 @@ final class CovidAPIUITests: XCTestCase {
         XCTAssertTrue(footer.label.contains("離線資料"))
     }
 
+    func testShowsCachedDataSourceOnMapWhenOffline() {
+        app.terminate()
+        app.launchArguments = ["--ui-testing", "--ui-testing-offline"]
+        app.launch()
+        app.tabBars.buttons["地圖"].tap()
+
+        let source = app.staticTexts["epidemic.map.source"]
+        XCTAssertTrue(source.waitForExistence(timeout: 5))
+        XCTAssertTrue(source.label.contains("離線資料"))
+        XCTAssertTrue(source.label.contains("更新於"))
+    }
+
     func testFavoritesLocationFromDetail() {
         let firstCell = app.cells["epidemic.cell.0"]
         XCTAssertTrue(firstCell.waitForExistence(timeout: 5))

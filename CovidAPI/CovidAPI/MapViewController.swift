@@ -38,6 +38,7 @@ class MapViewController: UIViewController {
     private var hasCenteredOnUser = false
     private var geocodingGeneration = 0
     private let statusLabel = UILabel()
+    private let sourceLabel = UILabel()
     private let filterControl = UISegmentedControl(items: AlertFilter.allCases.map(\.title))
     private lazy var fitAllButton = UIBarButtonItem(
         image: UIImage(systemName: "globe.asia.australia"),
@@ -98,6 +99,7 @@ class MapViewController: UIViewController {
 
         configureFilterControl()
         configureStatusLabel()
+        configureSourceLabel()
         loadData()
     }
 
@@ -164,6 +166,7 @@ class MapViewController: UIViewController {
 
     private func show(_ snapshot: EpidemicSnapshot) {
         allEpidemics = snapshot.epidemics
+        updateSourceLabel(with: snapshot)
         updateFilterAvailability()
         applyFilter()
     }
@@ -272,6 +275,37 @@ class MapViewController: UIViewController {
             statusLabel.widthAnchor.constraint(lessThanOrEqualTo: mapView.widthAnchor, multiplier: 0.8),
             statusLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 44)
         ])
+    }
+
+    private func configureSourceLabel() {
+        sourceLabel.font = .preferredFont(forTextStyle: .caption1)
+        sourceLabel.textColor = .secondaryLabel
+        sourceLabel.backgroundColor = UIColor.systemBackground.withAlphaComponent(0.9)
+        sourceLabel.textAlignment = .center
+        sourceLabel.numberOfLines = 1
+        sourceLabel.layer.cornerRadius = 10
+        sourceLabel.layer.masksToBounds = true
+        sourceLabel.adjustsFontForContentSizeCategory = true
+        sourceLabel.accessibilityIdentifier = "epidemic.map.source"
+        sourceLabel.isHidden = true
+        sourceLabel.translatesAutoresizingMaskIntoConstraints = false
+        mapView.addSubview(sourceLabel)
+        NSLayoutConstraint.activate([
+            sourceLabel.centerXAnchor.constraint(equalTo: mapView.centerXAnchor),
+            sourceLabel.bottomAnchor.constraint(equalTo: mapView.safeAreaLayoutGuide.bottomAnchor, constant: -12),
+            sourceLabel.leadingAnchor.constraint(greaterThanOrEqualTo: mapView.safeAreaLayoutGuide.leadingAnchor, constant: 20),
+            sourceLabel.trailingAnchor.constraint(lessThanOrEqualTo: mapView.safeAreaLayoutGuide.trailingAnchor, constant: -20),
+            sourceLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 36)
+        ])
+    }
+
+    private func updateSourceLabel(with snapshot: EpidemicSnapshot) {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "zh_Hant_TW")
+        formatter.dateFormat = "yyyy/MM/dd HH:mm"
+        let source = snapshot.isFromCache ? "離線資料" : "疾管署資料"
+        sourceLabel.text = "  \(source)・更新於 \(formatter.string(from: snapshot.updatedAt))  "
+        sourceLabel.isHidden = false
     }
 
     private func geocodeNext(index: Int, generation: Int) {
