@@ -109,6 +109,14 @@ final class EpidemicListViewModel {
         applyFilters()
     }
 
+    func resetViewOptions() {
+        query = ""
+        filter = .all
+        showsFavoritesOnly = false
+        sortMode = .newest
+        applyFilters()
+    }
+
     func favoritesDidChange() {
         applyFilters()
     }

@@ -254,14 +254,30 @@ class EpidemicTableViewController: UITableViewController {
         ) { [weak self] _ in
             self?.setSortMode(.severity)
         }
+        let reset = UIAction(
+            title: "重設檢視條件",
+            image: UIImage(systemName: "arrow.counterclockwise")
+        ) { [weak self] _ in
+            self?.resetViewOptions()
+        }
         let favorites = UIMenu(options: .displayInline, children: [filter, manage])
         let sorting = UIMenu(title: "排序方式", options: .displayInline, children: [newest, severity])
-        return UIMenu(children: [favorites, sorting])
+        return UIMenu(children: [favorites, sorting, reset])
     }
 
     private func setSortMode(_ sortMode: EpidemicSortMode) {
         self.sortMode = sortMode
         viewModel.setSortMode(sortMode)
+        updateFavoritesMenu()
+    }
+
+    private func resetViewOptions() {
+        showsFavoritesOnly = false
+        sortMode = .newest
+        searchController.searchBar.text = nil
+        searchController.isActive = false
+        filterControl.selectedSegmentIndex = AlertFilter.all.rawValue
+        viewModel.resetViewOptions()
         updateFavoritesMenu()
     }
 
