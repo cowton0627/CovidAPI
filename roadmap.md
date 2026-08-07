@@ -2,7 +2,7 @@
 
 ## 目前狀態
 
-更新日期：2026-08-06
+更新日期：2026-08-07
 
 資料層重構、離線支援、地圖效能、UI tests、無障礙、未分級說明、地區收藏與 app 內新疫情通知均已完成。CI Simulator 建立流程也已修正；本機 `main` 與 `origin/main` 同步。
 
@@ -36,6 +36,7 @@
 - 本機通知加入疫情識別資訊，點擊後可直接開啟對應詳細頁，前景使用期間也會顯示橫幅。
 - 地圖加入收藏選單，可只顯示收藏地區或直接進入收藏管理頁；收藏異動會即時同步 markers。
 - 地圖加入「顯示全部疫情標記」，可在單點定位或手動移動後重新框選目前篩選結果。
+- GitHub Actions checkout 升級至 Node.js 24 的 v6，並將 workflow token 權限限制為唯讀 repository content。
 
 ## 驗證結果
 
@@ -72,6 +73,7 @@
   - 從詳細頁定位單一疫情後，可重新框選並看到全部 markers。
 - Smoke test 確認 app 可安裝、啟動並載入 CDC 資料；列表、搜尋列、篩選器與 tab bar 顯示正常，未發生 crash。
 - `project.pbxproj`、`Info.plist` 與 `git diff --check` 驗證通過。
+- GitHub Actions 不再出現 `actions/checkout@v4` 的 Node.js 20 淘汰警告。
 - 本機簽章可從 ignored 的 `Signing.local.xcconfig` 解析，commit 中沒有個人 Team ID。
 - CI 修正 commit `08b1623` 已推送；GitHub Actions run `30894732585` 的 Simulator 建立、build 與 test 均成功。
 
