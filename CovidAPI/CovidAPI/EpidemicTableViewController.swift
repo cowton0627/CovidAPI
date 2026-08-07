@@ -20,6 +20,7 @@ class EpidemicTableViewController: UITableViewController {
     private let filterControl = UISegmentedControl(items: AlertFilter.allCases.map(\.title))
     private let notificationManager = EpidemicNotificationManager.shared
     private var showsFavoritesOnly = false
+    private var sortMode: EpidemicSortMode = .newest
     private var pendingNotificationIdentifier: String?
    
     @IBSegueAction func showDetail(_ coder: NSCoder) -> DetailViewController? {
@@ -239,7 +240,29 @@ class EpidemicTableViewController: UITableViewController {
         ) { [weak self] _ in
             self?.showFavoritesManager()
         }
-        return UIMenu(children: [filter, manage])
+        let newest = UIAction(
+            title: "依發布時間",
+            image: UIImage(systemName: "calendar"),
+            state: sortMode == .newest ? .on : .off
+        ) { [weak self] _ in
+            self?.setSortMode(.newest)
+        }
+        let severity = UIAction(
+            title: "依疫情等級",
+            image: UIImage(systemName: "exclamationmark.triangle"),
+            state: sortMode == .severity ? .on : .off
+        ) { [weak self] _ in
+            self?.setSortMode(.severity)
+        }
+        let favorites = UIMenu(options: .displayInline, children: [filter, manage])
+        let sorting = UIMenu(title: "排序方式", options: .displayInline, children: [newest, severity])
+        return UIMenu(children: [favorites, sorting])
+    }
+
+    private func setSortMode(_ sortMode: EpidemicSortMode) {
+        self.sortMode = sortMode
+        viewModel.setSortMode(sortMode)
+        updateFavoritesMenu()
     }
 
     private func showFavoritesManager() {

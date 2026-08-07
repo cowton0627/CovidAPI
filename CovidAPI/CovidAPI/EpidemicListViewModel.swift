@@ -35,6 +35,11 @@ enum AlertFilter: Int, CaseIterable {
     }
 }
 
+enum EpidemicSortMode {
+    case newest
+    case severity
+}
+
 final class EpidemicListViewModel {
     var onChange: (() -> Void)?
 
@@ -49,6 +54,7 @@ final class EpidemicListViewModel {
     private var query = ""
     private var filter: AlertFilter = .all
     private var showsFavoritesOnly = false
+    private var sortMode: EpidemicSortMode = .newest
 
     init(
         repository: EpidemicRepository = .shared,
@@ -98,6 +104,11 @@ final class EpidemicListViewModel {
         applyFilters()
     }
 
+    func setSortMode(_ sortMode: EpidemicSortMode) {
+        self.sortMode = sortMode
+        applyFilters()
+    }
+
     func favoritesDidChange() {
         applyFilters()
     }
@@ -120,6 +131,18 @@ final class EpidemicListViewModel {
                 epidemic.headline.localizedCaseInsensitiveContains(query) ||
                 epidemic.description.localizedCaseInsensitiveContains(query)
             return matchesLevel && matchesFavorite && matchesQuery
+        }.sorted { lhs, rhs in
+            switch sortMode {
+            case .newest:
+                return lhs.effective > rhs.effective
+            case .severity:
+                let leftLevel = AlertLevel.from(epidemic: lhs).rawValue
+                let rightLevel = AlertLevel.from(epidemic: rhs).rawValue
+                if leftLevel != rightLevel {
+                    return leftLevel > rightLevel
+                }
+                return lhs.effective > rhs.effective
+            }
         }
         state = visibleEpidemics.isEmpty ? .empty : .loaded
         onChange?()

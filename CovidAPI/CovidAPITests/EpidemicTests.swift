@@ -145,6 +145,43 @@ final class EpidemicTests: XCTestCase {
         XCTAssertEqual(viewModel.visibleEpidemics, [warning])
     }
 
+    func testViewModelSortsBySeverityThenDate() {
+        let newestWatch = Epidemic(
+            headline: "泰國 第一級注意",
+            effective: date,
+            description: "內容",
+            severityLevel: 1
+        )
+        let olderWarning = Epidemic(
+            headline: "日本 第三級警告",
+            effective: date.addingTimeInterval(-60),
+            description: "內容",
+            severityLevel: 3
+        )
+        let repository = EpidemicRepository(
+            apiClient: APIClientStub(result: .success([olderWarning, newestWatch])),
+            cache: CacheStub()
+        )
+        let viewModel = EpidemicListViewModel(
+            repository: repository,
+            notificationManager: NotificationManagerStub()
+        )
+        let expectation = expectation(description: "loaded")
+        var didFulfill = false
+        viewModel.onChange = {
+            if viewModel.allEpidemics.count == 2, !didFulfill {
+                didFulfill = true
+                expectation.fulfill()
+            }
+        }
+        viewModel.load()
+        wait(for: [expectation], timeout: 1)
+
+        XCTAssertEqual(viewModel.visibleEpidemics.first, newestWatch)
+        viewModel.setSortMode(.severity)
+        XCTAssertEqual(viewModel.visibleEpidemics, [olderWarning, newestWatch])
+    }
+
     func testFavoriteStorePersistsLocationAcrossOutbreaks() {
         let suiteName = "FavoriteStoreTests.\(UUID().uuidString)"
         guard let defaults = UserDefaults(suiteName: suiteName) else {

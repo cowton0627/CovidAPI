@@ -28,6 +28,18 @@ final class CovidAPIUITests: XCTestCase {
         XCTAssertTrue(app.staticTexts.matching(NSPredicate(format: "label CONTAINS '日本-腸病毒'")).firstMatch.waitForExistence(timeout: 2))
     }
 
+    func testSortsListByAlertSeverity() {
+        let firstCell = app.cells["epidemic.cell.0"]
+        XCTAssertTrue(firstCell.waitForExistence(timeout: 5))
+
+        app.buttons["epidemic.favorites.filter"].tap()
+        app.buttons["依疫情等級"].tap()
+
+        XCTAssertTrue(firstCell.label.contains("美國-沙門氏菌感染症"))
+        app.buttons["epidemic.favorites.filter"].tap()
+        XCTAssertTrue(app.buttons["依疫情等級"].isSelected)
+    }
+
     func testOpensDetailFromList() {
         let firstCell = app.cells["epidemic.cell.0"]
         XCTAssertTrue(firstCell.waitForExistence(timeout: 5))
