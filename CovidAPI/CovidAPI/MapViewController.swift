@@ -39,6 +39,12 @@ class MapViewController: UIViewController {
     private var geocodingGeneration = 0
     private let statusLabel = UILabel()
     private let filterControl = UISegmentedControl(items: AlertFilter.allCases.map(\.title))
+    private lazy var fitAllButton = UIBarButtonItem(
+        image: UIImage(systemName: "globe.asia.australia"),
+        style: .plain,
+        target: self,
+        action: #selector(showAllAnnotations)
+    )
     private var pendingFocusIdentifier: String?
 
     override func loadView() {
@@ -61,12 +67,16 @@ class MapViewController: UIViewController {
         let span = MKCoordinateSpan(latitudeDelta: 80, longitudeDelta: 80)
         mapView.setRegion(MKCoordinateRegion(center: center, span: span), animated: false)
 
-        navigationItem.rightBarButtonItem = UIBarButtonItem(
+        let refreshButton = UIBarButtonItem(
             barButtonSystemItem: .refresh,
             target: self,
             action: #selector(reload)
         )
-        navigationItem.rightBarButtonItem?.accessibilityLabel = "重新整理疫情地圖"
+        refreshButton.accessibilityLabel = "重新整理疫情地圖"
+        fitAllButton.accessibilityIdentifier = "epidemic.map.showAll"
+        fitAllButton.accessibilityLabel = "顯示全部疫情標記"
+        fitAllButton.isEnabled = false
+        navigationItem.rightBarButtonItems = [refreshButton, fitAllButton]
         navigationItem.leftBarButtonItem = UIBarButtonItem(
             image: UIImage(systemName: "star"),
             menu: makeFavoritesMenu()
@@ -95,6 +105,30 @@ class MapViewController: UIViewController {
         let epidemicAnnotations = mapView.annotations.filter { $0 is EpidemicAnnotation }
         mapView.removeAnnotations(epidemicAnnotations)
         loadData(forceRefresh: true)
+    }
+
+    @objc private func showAllAnnotations() {
+        let annotations = mapView.annotations.compactMap { $0 as? EpidemicAnnotation }
+        guard !annotations.isEmpty else { return }
+        pendingFocusIdentifier = nil
+        if annotations.count == 1, let annotation = annotations.first {
+            let region = MKCoordinateRegion(
+                center: annotation.coordinate,
+                latitudinalMeters: 3_000_000,
+                longitudinalMeters: 3_000_000
+            )
+            mapView.setRegion(region, animated: true)
+            return
+        }
+        let mapRect = annotations.reduce(MKMapRect.null) { result, annotation in
+            let point = MKMapPoint(annotation.coordinate)
+            return result.union(MKMapRect(x: point.x, y: point.y, width: 0, height: 0))
+        }
+        mapView.setVisibleMapRect(
+            mapRect,
+            edgePadding: UIEdgeInsets(top: 64, left: 32, bottom: 32, right: 32),
+            animated: true
+        )
     }
 
     func focus(on epidemic: Epidemic) {
@@ -139,6 +173,7 @@ class MapViewController: UIViewController {
         geocoder.cancelGeocode()
         let annotations = mapView.annotations.filter { $0 is EpidemicAnnotation }
         mapView.removeAnnotations(annotations)
+        fitAllButton.isEnabled = false
         epidemics = allEpidemics.filter {
             selectedFilter.matches($0) && (!showsFavoritesOnly || favoriteStore.contains($0))
         }
@@ -271,6 +306,7 @@ class MapViewController: UIViewController {
     private func addAnnotation(for epidemic: Epidemic, coordinate: CLLocationCoordinate2D) {
         let annotation = EpidemicAnnotation(epidemic: epidemic, coordinate: coordinate)
         mapView.addAnnotation(annotation)
+        fitAllButton.isEnabled = true
         focusPendingAnnotationIfAvailable()
     }
 
