@@ -199,6 +199,20 @@ final class CovidAPIUITests: XCTestCase {
         )
     }
 
+    func testOffersSettingsWhenNotificationPermissionIsDenied() {
+        app.terminate()
+        app.launchArguments = ["--ui-testing", "--ui-testing-notification-denied"]
+        app.launch()
+
+        let toggle = app.buttons["epidemic.notifications.toggle"]
+        XCTAssertTrue(toggle.waitForExistence(timeout: 5))
+        toggle.tap()
+
+        XCTAssertTrue(app.alerts["無法開啟通知"].waitForExistence(timeout: 2))
+        XCTAssertTrue(app.alerts.buttons["前往設定"].exists)
+        XCTAssertTrue(app.alerts.buttons["取消"].exists)
+    }
+
     func testEnablesNotificationsAfterSystemPermissionIsGranted() {
         addUIInterruptionMonitor(withDescription: "通知權限") { alert in
             let allowButton = alert.buttons["Allow"]

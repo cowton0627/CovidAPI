@@ -38,6 +38,7 @@
 - 地圖加入「顯示全部疫情標記」，可在單點定位或手動移動後重新框選目前篩選結果。
 - GitHub Actions checkout 升級至 Node.js 24 的 v6，並將 workflow token 權限限制為唯讀 repository content。
 - 地圖底部新增資料來源與更新時間，使用快取時會明確標示「離線資料」。
+- 通知權限遭拒時，提示可直接前往 App 系統設定重新開啟。
 
 ## 驗證結果
 
@@ -56,7 +57,7 @@
   - ViewModel 收藏地區篩選。
   - 通知追蹤只回傳收藏地區且尚未看過的新疫情。
   - 通知 payload 可正確保留並還原疫情識別碼。
-- 16 項 UI tests 全部通過，0 failures：
+- 17 項 UI tests 全部通過，0 failures：
   - 搜尋與警示等級篩選。
   - 列表進入詳細頁。
   - 切換至地圖頁。
@@ -73,6 +74,7 @@
   - 地圖可只顯示收藏地區，並即時移除非收藏 markers。
   - 從詳細頁定位單一疫情後，可重新框選並看到全部 markers。
   - 離線時列表與地圖皆會顯示快取資料來源及更新時間。
+  - 通知權限遭拒時會顯示取消與前往設定選項。
 - Smoke test 確認 app 可安裝、啟動並載入 CDC 資料；列表、搜尋列、篩選器與 tab bar 顯示正常，未發生 crash。
 - `project.pbxproj`、`Info.plist` 與 `git diff --check` 驗證通過。
 - GitHub Actions 不再出現 `actions/checkout@v4` 的 Node.js 20 淘汰警告。

@@ -85,6 +85,9 @@ final class EpidemicNotificationManager: EpidemicNotificationManaging {
         self.defaults = defaults
         self.favoriteStore = favoriteStore
         self.tracker = tracker ?? EpidemicNotificationTracker(defaults: defaults)
+        if ProcessInfo.processInfo.arguments.contains("--ui-testing-notification-denied") {
+            defaults.set(false, forKey: enabledKey)
+        }
     }
 
     func setEnabled(
@@ -93,6 +96,11 @@ final class EpidemicNotificationManager: EpidemicNotificationManaging {
         completion: @escaping (Bool) -> Void
     ) {
         guard enabled else {
+            defaults.set(false, forKey: enabledKey)
+            completion(false)
+            return
+        }
+        if ProcessInfo.processInfo.arguments.contains("--ui-testing-notification-denied") {
             defaults.set(false, forKey: enabledKey)
             completion(false)
             return

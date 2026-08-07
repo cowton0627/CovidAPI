@@ -276,7 +276,11 @@ class EpidemicTableViewController: UITableViewController {
             message: "請至系統設定允許 CovidAPI 傳送通知。",
             preferredStyle: .alert
         )
-        alert.addAction(UIAlertAction(title: "知道了", style: .default))
+        alert.addAction(UIAlertAction(title: "取消", style: .cancel))
+        alert.addAction(UIAlertAction(title: "前往設定", style: .default) { _ in
+            guard let settingsURL = URL(string: UIApplication.openSettingsURLString) else { return }
+            UIApplication.shared.open(settingsURL)
+        })
         present(alert, animated: true)
     }
 
