@@ -43,6 +43,8 @@ class EpidemicTableViewController: UITableViewController {
         tableView.accessibilityIdentifier = "epidemic.list"
 
         refreshControl = UIRefreshControl()
+        refreshControl?.accessibilityIdentifier = "epidemic.refresh"
+        refreshControl?.accessibilityLabel = "重新整理疫情資料"
         refreshControl?.addTarget(self, action: #selector(refresh), for: .valueChanged)
 
         searchController.searchResultsUpdater = self

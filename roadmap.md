@@ -63,7 +63,7 @@
   - 通知 payload 可正確保留並還原疫情識別碼。
   - 首頁可依疫情等級排序，等級相同時再依發布時間排序。
   - ViewModel 可重設搜尋、等級、收藏與排序條件。
-- 21 項 UI tests 全部通過，0 failures：
+- 22 項 UI tests 全部通過，0 failures：
   - 搜尋與警示等級篩選。
   - 列表進入詳細頁。
   - 切換至地圖頁。
@@ -85,6 +85,7 @@
   - 首頁可一鍵重設篩選與排序，恢復全部資料及發布時間排序。
   - 首頁空結果畫面可直接重設篩選與搜尋條件。
   - 地圖可一鍵重設疫情等級與收藏篩選。
+  - 首頁下拉重新整理可觸發資料更新。
 - Smoke test 確認 app 可安裝、啟動並載入 CDC 資料；列表、搜尋列、篩選器與 tab bar 顯示正常，未發生 crash。
 - `project.pbxproj`、`Info.plist` 與 `git diff --check` 驗證通過。
 - GitHub Actions 不再出現 `actions/checkout@v4` 的 Node.js 20 淘汰警告。
