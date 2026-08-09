@@ -64,6 +64,24 @@ final class CovidAPIUITests: XCTestCase {
         XCTAssertTrue(app.buttons["依發布時間"].isSelected)
     }
 
+    func testResetsOptionsFromEmptyState() {
+        let firstCell = app.cells["epidemic.cell.0"]
+        XCTAssertTrue(firstCell.waitForExistence(timeout: 5))
+        let search = app.searchFields["epidemic.search"]
+        XCTAssertTrue(search.waitForExistence(timeout: 2))
+        search.tap()
+        if !app.keyboards.firstMatch.waitForExistence(timeout: 2) {
+            search.tap()
+            XCTAssertTrue(app.keyboards.firstMatch.waitForExistence(timeout: 2))
+        }
+        search.typeText("不存在的疫情")
+        let reset = app.buttons["epidemic.reset"]
+        XCTAssertTrue(reset.waitForExistence(timeout: 2))
+        reset.tap()
+        XCTAssertTrue(firstCell.waitForExistence(timeout: 2))
+        XCTAssertTrue(firstCell.label.contains("日本-腸病毒"))
+    }
+
     func testOpensDetailFromList() {
         let firstCell = app.cells["epidemic.cell.0"]
         XCTAssertTrue(firstCell.waitForExistence(timeout: 5))

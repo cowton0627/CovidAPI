@@ -344,7 +344,10 @@ class EpidemicTableViewController: UITableViewController {
                 : "請嘗試其他關鍵字或警示等級。"
             tableView.backgroundView = makeStateView(
                 title: "沒有符合條件的資料",
-                message: message
+                message: message,
+                actionTitle: "重設檢視條件",
+                actionIdentifier: "epidemic.reset",
+                action: { [weak self] in self?.resetViewOptions() }
             )
         case .failed(let message):
             tableView.backgroundView = makeStateView(
@@ -396,7 +399,10 @@ class EpidemicTableViewController: UITableViewController {
         title: String,
         message: String,
         showActivity: Bool = false,
-        retryAction: (() -> Void)? = nil
+        retryAction: (() -> Void)? = nil,
+        actionTitle: String? = nil,
+        actionIdentifier: String? = nil,
+        action: (() -> Void)? = nil
     ) -> UIView {
         let container = UIView()
         container.accessibilityIdentifier = "epidemic.state"
@@ -433,6 +439,15 @@ class EpidemicTableViewController: UITableViewController {
             button.titleLabel?.font = .preferredFont(forTextStyle: .headline)
             button.action = retryAction
             button.accessibilityIdentifier = "epidemic.retry"
+            stack.addArrangedSubview(button)
+        }
+
+        if let actionTitle, let action {
+            let button = RetryButton(type: .system)
+            button.setTitle(actionTitle, for: .normal)
+            button.titleLabel?.font = .preferredFont(forTextStyle: .headline)
+            button.action = action
+            button.accessibilityIdentifier = actionIdentifier
             stack.addArrangedSubview(button)
         }
 

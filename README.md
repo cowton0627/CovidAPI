@@ -101,7 +101,7 @@ xcodebuild test \
   -destination 'platform=iOS Simulator,name=iPhone 16'
 ```
 
-目前有 14 項單元測試，涵蓋疫情等級判定、疾管署等級解碼、API 成功快取、離線 fallback、ViewModel 搜尋／篩選／排序、收藏持久化、新疫情通知比對與 payload 路由、地名正規化與座標快取；另有 19 項 UI tests，涵蓋列表排序與條件重設、列表與地圖等級／收藏篩選、收藏管理、通知系統權限與 opt-in／拒絕恢復／點擊導覽、詳細頁導覽／分享／地圖定位與全覽、地圖 marker／callout 導覽，以及列表與地圖的離線快取來源標示。
+目前有 14 項單元測試，涵蓋疫情等級判定、疾管署等級解碼、API 成功快取、離線 fallback、ViewModel 搜尋／篩選／排序、收藏持久化、新疫情通知比對與 payload 路由、地名正規化與座標快取；另有 20 項 UI tests，涵蓋列表排序與條件重設、空結果快速重設、列表與地圖等級／收藏篩選、收藏管理、通知系統權限與 opt-in／拒絕恢復／點擊導覽、詳細頁導覽／分享／地圖定位與全覽、地圖 marker／callout 導覽，以及列表與地圖的離線快取來源標示。
 
 ## Roadmap
 
