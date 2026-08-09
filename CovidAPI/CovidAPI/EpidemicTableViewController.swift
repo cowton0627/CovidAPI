@@ -328,6 +328,7 @@ class EpidemicTableViewController: UITableViewController {
     private func render() {
         refreshControl?.endRefreshing()
         tableView.reloadData()
+        tableView.tableFooterView = nil
         updateFilterAvailability()
 
         switch viewModel.state {

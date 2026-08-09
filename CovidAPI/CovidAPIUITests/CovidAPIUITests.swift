@@ -86,6 +86,7 @@ final class CovidAPIUITests: XCTestCase {
         search.typeText("不存在的疫情")
         let reset = app.buttons["epidemic.reset"]
         XCTAssertTrue(reset.waitForExistence(timeout: 2))
+        XCTAssertFalse(app.staticTexts["epidemic.updatedAt"].exists)
         reset.tap()
         XCTAssertTrue(firstCell.waitForExistence(timeout: 2))
         XCTAssertTrue(firstCell.label.contains("日本-腸病毒"))
