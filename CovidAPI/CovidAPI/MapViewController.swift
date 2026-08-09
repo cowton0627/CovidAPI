@@ -231,6 +231,14 @@ class MapViewController: UIViewController {
         applyFilter()
     }
 
+    private func resetViewOptions() {
+        selectedFilter = .all
+        showsFavoritesOnly = false
+        filterControl.selectedSegmentIndex = AlertFilter.all.rawValue
+        updateFavoritesMenu()
+        applyFilter()
+    }
+
     private func updateFavoritesMenu() {
         navigationItem.leftBarButtonItem?.image = UIImage(
             systemName: showsFavoritesOnly ? "star.fill" : "star"
@@ -255,7 +263,13 @@ class MapViewController: UIViewController {
             let controller = FavoritesViewController(epidemics: self.allEpidemics)
             self.navigationController?.pushViewController(controller, animated: true)
         }
-        return UIMenu(children: [filter, manage])
+        let reset = UIAction(
+            title: "重設檢視條件",
+            image: UIImage(systemName: "arrow.counterclockwise")
+        ) { [weak self] _ in
+            self?.resetViewOptions()
+        }
+        return UIMenu(children: [filter, manage, reset])
     }
 
     private func configureStatusLabel() {

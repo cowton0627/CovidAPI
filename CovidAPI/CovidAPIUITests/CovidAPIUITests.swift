@@ -173,6 +173,21 @@ final class CovidAPIUITests: XCTestCase {
         XCTAssertFalse(marker.waitForExistence(timeout: 2))
     }
 
+    func testResetsMapViewOptions() {
+        app.tabBars.buttons["地圖"].tap()
+        let japanMarker = app.descendants(matching: .any)["epidemic.map.marker.日本"]
+        XCTAssertTrue(japanMarker.waitForExistence(timeout: 5))
+
+        app.buttons["三級"].tap()
+        XCTAssertFalse(japanMarker.waitForExistence(timeout: 2))
+        app.buttons["epidemic.map.favorites"].tap()
+        let reset = app.buttons["重設檢視條件"]
+        XCTAssertTrue(reset.waitForExistence(timeout: 2))
+        reset.tap()
+
+        XCTAssertTrue(japanMarker.waitForExistence(timeout: 5))
+    }
+
     func testFiltersMapToFavoriteLocations() {
         let firstCell = app.cells["epidemic.cell.0"]
         XCTAssertTrue(firstCell.waitForExistence(timeout: 5))
