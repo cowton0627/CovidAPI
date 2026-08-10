@@ -14,15 +14,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - name: Validate notification API contract
-        run: |
-          ruby -e '
-            require "yaml"
-            spec = YAML.load_file("docs/notification-backend.openapi.yaml")
-            abort "OpenAPI version missing" unless spec["openapi"] == "3.0.3"
-            abort "Health endpoint missing" unless spec.dig("paths", "/healthz", "get")
-            abort "Device endpoint missing" unless spec.dig("paths", "/v1/devices/{deviceId}", "put")
-            puts "OpenAPI contract is valid"
-          '
+        run: ruby scripts/validate_notification_contract.rb
       - name: Create iOS Simulator
         id: simulator
         run: |
