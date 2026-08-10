@@ -89,6 +89,7 @@
 - Smoke test 確認 app 可安裝、啟動並載入 CDC 資料；列表、搜尋列、篩選器與 tab bar 顯示正常，未發生 crash。
 - `project.pbxproj`、`Info.plist` 與 `git diff --check` 驗證通過。
 - GitHub Actions 不再出現 `actions/checkout@v4` 的 Node.js 20 淘汰警告。
+- GitHub Actions 會在 iOS 測試前驗證通知後端 OpenAPI 契約。
 - 本機簽章可從 ignored 的 `Signing.local.xcconfig` 解析，commit 中沒有個人 Team ID。
 - CI 修正 commit `08b1623` 已推送；GitHub Actions run `30894732585` 的 Simulator 建立、build 與 test 均成功。
 
