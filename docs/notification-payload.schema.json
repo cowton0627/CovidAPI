@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/schemas/covidapi-notification-payload.json",
+  "title": "CovidAPI APNs notification payload",
+  "type": "object",
+  "required": ["aps", "epidemicIdentifier"],
+  "additionalProperties": false,
+  "properties": {
+    "aps": {
+      "type": "object",
+      "required": ["alert"],
+      "additionalProperties": false,
+      "properties": {
+        "alert": {
+          "type": "object",
+          "required": ["title", "body"],
+          "additionalProperties": false,
+          "properties": {
+            "title": { "type": "string", "minLength": 1, "maxLength": 80 },
+            "body": { "type": "string", "minLength": 1, "maxLength": 160 }
+          }
+        },
+        "sound": { "type": "string", "const": "default" }
+      }
+    },
+    "epidemicIdentifier": {
+      "type": "string",
+      "pattern": "^.+\\|[0-9]+(\\.[0-9]+)?$",
+      "maxLength": 512
+    }
+  }
+}
