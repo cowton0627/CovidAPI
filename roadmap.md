@@ -100,4 +100,4 @@
 
 ## 下一步
 
-1. 若需要完全即時通知，設計後端定期抓取 CDC 資料與 APNs 推播服務。
+1. 若需要完全即時通知，依 `docs/notification-backend.md` 實作後端定期抓取 CDC 資料與 APNs 推播服務。
