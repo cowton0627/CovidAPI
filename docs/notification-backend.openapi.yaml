@@ -1,0 +1,142 @@
+openapi: 3.0.3
+info:
+  title: CovidAPI Notification Backend
+  version: 1.0.0
+  description: Device registration and notification preference contract.
+servers:
+  - url: https://notifications.example.com
+security:
+  - bearerAuth: []
+paths:
+  /v1/devices/{deviceId}:
+    parameters:
+      - $ref: '#/components/parameters/DeviceId'
+    put:
+      summary: Register or update a device token
+      operationId: upsertDevice
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeviceRegistration'
+      responses:
+        '204':
+          description: Device updated.
+        '400':
+          $ref: '#/components/responses/InvalidRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    delete:
+      summary: Revoke a device
+      operationId: deleteDevice
+      responses:
+        '204':
+          description: Device and preferences removed.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /v1/devices/{deviceId}/preferences:
+    parameters:
+      - $ref: '#/components/parameters/DeviceId'
+    patch:
+      summary: Update notification preferences
+      operationId: updatePreferences
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Preferences'
+      responses:
+        '204':
+          description: Preferences updated.
+        '400':
+          $ref: '#/components/responses/InvalidRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /healthz:
+    get:
+      security: []
+      summary: Service health check
+      operationId: healthCheck
+      responses:
+        '200':
+          description: Service is healthy.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [status]
+                properties:
+                  status:
+                    type: string
+                    enum: [ok]
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+  parameters:
+    DeviceId:
+      name: deviceId
+      in: path
+      required: true
+      schema:
+        type: string
+        minLength: 16
+        maxLength: 128
+  schemas:
+    DeviceRegistration:
+      type: object
+      required: [platform, pushToken, notificationsEnabled, favoriteLocations]
+      properties:
+        platform:
+          type: string
+          enum: [ios]
+        pushToken:
+          type: string
+          minLength: 32
+          maxLength: 512
+        notificationsEnabled:
+          type: boolean
+        favoriteLocations:
+          type: array
+          maxItems: 100
+          items:
+            type: string
+            minLength: 1
+            maxLength: 120
+    Preferences:
+      type: object
+      required: [notificationsEnabled, favoriteLocations]
+      properties:
+        notificationsEnabled:
+          type: boolean
+        favoriteLocations:
+          type: array
+          maxItems: 100
+          items:
+            type: string
+            minLength: 1
+            maxLength: 120
+    Error:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: object
+          required: [code, message]
+          properties:
+            code:
+              type: string
+            message:
+              type: string
+  responses:
+    InvalidRequest:
+      description: Invalid request.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Missing or invalid access token.

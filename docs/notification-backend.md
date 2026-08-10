@@ -1,5 +1,7 @@
 # 即時疫情通知後端設計
 
+可匯入工具的 OpenAPI 規格：[`notification-backend.openapi.yaml`](notification-backend.openapi.yaml)。
+
 本文件描述未來將 CDC 旅遊疫情資料轉成 APNs 推播的最小後端契約。iOS app 目前已能接收通知、解析疫情識別資訊並導覽至詳細頁；後端只需要穩定產生相同格式的 payload。
 
 ## 流程
