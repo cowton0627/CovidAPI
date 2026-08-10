@@ -1,0 +1,10 @@
+{
+  "aps": {
+    "alert": {
+      "title": "新的旅遊疫情資訊",
+      "body": "日本-腸病毒"
+    },
+    "sound": "default"
+  },
+  "epidemicIdentifier": "日本-腸病毒|1700000000.0"
+}
