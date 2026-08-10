@@ -3,6 +3,7 @@
 可匯入工具的 OpenAPI 規格：[`notification-backend.openapi.yaml`](notification-backend.openapi.yaml)。
 APNs payload JSON Schema：[`notification-payload.schema.json`](notification-payload.schema.json)。
 可用於 contract test 的範例：[`notification-payload.example.json`](notification-payload.example.json)。
+上線順序與事故處理：[`notification-backend-runbook.md`](notification-backend-runbook.md)。
 
 本文件描述未來將 CDC 旅遊疫情資料轉成 APNs 推播的最小後端契約。iOS app 目前已能接收通知、解析疫情識別資訊並導覽至詳細頁；後端只需要穩定產生相同格式的 payload。
 
