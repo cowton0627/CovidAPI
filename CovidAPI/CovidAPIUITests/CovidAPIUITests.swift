@@ -169,6 +169,14 @@ final class CovidAPIUITests: XCTestCase {
         XCTAssertTrue(app.tables["epidemic.detail"].waitForExistence(timeout: 2))
     }
 
+    func testUsesAreaDescriptionForCanadaMapMarker() {
+        app.tabBars.buttons["地圖"].tap()
+        XCTAssertTrue(app.descendants(matching: .any)["epidemic.map.marker.日本"].waitForExistence(timeout: 5))
+        app.buttons["epidemic.map.showAll"].tap()
+        let canadaMarker = app.descendants(matching: .any)["epidemic.map.marker.加拿大"]
+        XCTAssertTrue(canadaMarker.waitForExistence(timeout: 10))
+    }
+
     func testFiltersMapByAlertLevel() {
         app.tabBars.buttons["地圖"].tap()
         let marker = app.descendants(matching: .any)["epidemic.map.marker.日本"]

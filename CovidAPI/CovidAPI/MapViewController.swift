@@ -325,7 +325,7 @@ class MapViewController: UIViewController {
     private func geocodeNext(index: Int, generation: Int) {
         guard generation == geocodingGeneration, index < epidemics.count else { return }
         let epidemic = epidemics[index]
-        let locationName = LocationNameNormalizer.normalize(epidemic.headline)
+        let locationName = locationName(for: epidemic)
 
         if let coordinate = uiTestingCoordinate(for: locationName) {
             addAnnotation(for: epidemic, coordinate: coordinate)
@@ -385,8 +385,16 @@ class MapViewController: UIViewController {
         switch locationName {
         case "日本": return CLLocationCoordinate2D(latitude: 35.6762, longitude: 139.6503)
         case "美國": return CLLocationCoordinate2D(latitude: 37.0902, longitude: -95.7129)
+        case "加拿大": return CLLocationCoordinate2D(latitude: 56.1304, longitude: -106.3468)
         default: return nil
         }
+    }
+
+    private func locationName(for epidemic: Epidemic) -> String {
+        if let area = epidemic.areaDescription?.trimmingCharacters(in: .whitespacesAndNewlines), !area.isEmpty {
+            return area
+        }
+        return LocationNameNormalizer.normalize(epidemic.headline)
     }
 
     private func makeCalloutDetailView(for ann: EpidemicAnnotation) -> UIView {
@@ -466,7 +474,7 @@ extension MapViewController: MKMapViewDelegate {
         view.detailCalloutAccessoryView = makeCalloutDetailView(for: epAnn)
         view.rightCalloutAccessoryView = UIButton(type: .detailDisclosure)
         view.accessibilityLabel = "\(epAnn.epidemic.headline)，\(epAnn.alertLevel.label)"
-        let locationName = LocationNameNormalizer.normalize(epAnn.epidemic.headline)
+        let locationName = locationName(for: epAnn.epidemic)
         view.accessibilityIdentifier = "epidemic.map.marker.\(locationName)"
         view.accessibilityHint = "點兩下顯示摘要與詳細資訊按鈕"
         view.rightCalloutAccessoryView?.accessibilityLabel = "查看完整疫情資訊"

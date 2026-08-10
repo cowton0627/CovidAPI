@@ -43,6 +43,7 @@
 - 首頁收藏選單加入「重設檢視條件」，可一鍵清除搜尋、等級、收藏限定與排序。
 - 首頁空結果畫面加入「重設檢視條件」按鈕，避免使用者需要重新開啟選單。
 - 地圖收藏選單加入「重設檢視條件」，可恢復全部疫情等級與收藏標記。
+- 地圖 geocoding 優先採用 CDC `areaDesc`，修正特殊 Unicode headline 導致加拿大狂犬病定位錯誤。
 
 ## 驗證結果
 
@@ -63,7 +64,7 @@
   - 通知 payload 可正確保留並還原疫情識別碼。
   - 首頁可依疫情等級排序，等級相同時再依發布時間排序。
   - ViewModel 可重設搜尋、等級、收藏與排序條件。
-- 22 項 UI tests 全部通過，0 failures：
+- 23 項 UI tests 全部通過，0 failures：
   - 搜尋與警示等級篩選。
   - 列表進入詳細頁。
   - 切換至地圖頁。
@@ -86,6 +87,7 @@
   - 首頁空結果畫面可直接重設篩選與搜尋條件。
   - 地圖可一鍵重設疫情等級與收藏篩選。
   - 首頁下拉重新整理可觸發資料更新。
+  - 加拿大狂犬病 marker 使用 `areaDesc`「加拿大」而非 headline 文字解析。
 - Smoke test 確認 app 可安裝、啟動並載入 CDC 資料；列表、搜尋列、篩選器與 tab bar 顯示正常，未發生 crash。
 - `project.pbxproj`、`Info.plist` 與 `git diff --check` 驗證通過。
 - GitHub Actions 不再出現 `actions/checkout@v4` 的 Node.js 20 淘汰警告。
