@@ -47,3 +47,47 @@
 - app 仍負責本地收藏、通知 opt-in 與詳細頁導覽。
 - 後端收到裝置 token 與收藏同步資料後，只推送使用者已收藏地區的新項目。
 - 若 app 長時間離線，重新啟動時仍以 API 快照補齊資料，不依賴推播完整性。
+
+## HTTP API 契約
+
+所有 endpoint 使用 HTTPS、JSON，並以短效 access token 驗證。伺服器不得把 APNs secret 或完整 token 回傳給 app。
+
+### `PUT /v1/devices/{deviceId}`
+
+註冊或更新裝置 token。`deviceId` 應由 app 產生並持久化，不使用 Apple ID 或其他個人識別資訊。
+
+```json
+{
+  "platform": "ios",
+  "pushToken": "<hex token>",
+  "notificationsEnabled": true,
+  "favoriteLocations": ["日本", "美國"]
+}
+```
+
+回應 `204 No Content`。重複提交必須冪等，token 變更時覆蓋舊值。
+
+### `PATCH /v1/devices/{deviceId}/preferences`
+
+同步通知 opt-in 與收藏地區。只接受必要欄位，回應 `204 No Content`；收藏集合應限制筆數與字串長度。
+
+### `DELETE /v1/devices/{deviceId}`
+
+撤銷裝置 token 與所有收藏同步資料，回應 `204 No Content`。登出、使用者關閉通知或刪除 app 資料時呼叫。
+
+### `GET /healthz`
+
+供排程器與 hosting health check 使用，只回傳服務狀態，不包含資料庫、APNs 或 CDC secret 詳細資訊。正常回應 `200 {"status":"ok"}`。
+
+### 錯誤格式
+
+```json
+{
+  "error": {
+    "code": "invalid_request",
+    "message": "favoriteLocations contains an invalid value"
+  }
+}
+```
+
+`4xx` 不重試；`429` 與 `5xx` 使用 `Retry-After` 或指數退避。所有錯誤回應不得回傳 push token。
