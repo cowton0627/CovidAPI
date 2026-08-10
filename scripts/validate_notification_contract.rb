@@ -19,7 +19,7 @@ checks = {
   "payload schema" => payload_schema["required"] == ["aps", "epidemicIdentifier"],
   "payload example" => payload_example.dig("aps", "alert", "title").is_a?(String) &&
     payload_example.dig("aps", "alert", "body").is_a?(String) &&
-    payload_example["epidemicIdentifier"].match?(/\\A.+\\|[0-9]+(?:\\.[0-9]+)?\\z/),
+    payload_example["epidemicIdentifier"].match?(/\A.+\|[0-9]+(?:\.[0-9]+)?\z/),
 }
 
 failed = checks.filter_map { |name, valid| name unless valid }
