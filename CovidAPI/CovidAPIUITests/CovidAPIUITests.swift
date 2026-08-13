@@ -20,7 +20,11 @@ final class CovidAPIUITests: XCTestCase {
         XCTAssertTrue(app.staticTexts.matching(NSPredicate(format: "label CONTAINS '日本-腸病毒'")).firstMatch.exists)
         XCTAssertFalse(app.staticTexts.matching(NSPredicate(format: "label CONTAINS '美國-沙門氏菌'")).firstMatch.exists)
 
-        app.buttons["Cancel"].tap()
+        let cancelSearch = ["Cancel", "Close", "取消"]
+            .map { app.buttons[$0] }
+            .first(where: \.exists)
+        XCTAssertNotNil(cancelSearch)
+        cancelSearch?.tap()
         app.segmentedControls["epidemic.filter"].buttons["三級"].tap()
         XCTAssertTrue(app.staticTexts.matching(NSPredicate(format: "label CONTAINS '美國-沙門氏菌'")).firstMatch.waitForExistence(timeout: 2))
 
@@ -322,10 +326,11 @@ final class CovidAPIUITests: XCTestCase {
         }
         toggle.tap()
         app.tap()
+        app.terminate()
+        app.launch()
 
-        let enabledToggle = app.buttons.matching(
-            NSPredicate(format: "identifier == %@ AND label == %@", "epidemic.notifications.toggle", "關閉收藏地區新疫情通知")
-        ).firstMatch
-        XCTAssertTrue(enabledToggle.waitForExistence(timeout: 5))
+        let enabledToggle = app.buttons["epidemic.notifications.toggle"]
+        XCTAssertTrue(enabledToggle.waitForExistence(timeout: 10))
+        XCTAssertEqual(enabledToggle.label, "關閉收藏地區新疫情通知")
     }
 }

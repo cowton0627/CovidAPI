@@ -294,15 +294,15 @@ class EpidemicTableViewController: UITableViewController {
             shouldEnable,
             currentEpidemics: viewModel.allEpidemics
         ) { [weak self] enabled in
-            self?.updateNotificationsButton()
+            self?.updateNotificationsButton(enabled: enabled)
             if shouldEnable && !enabled {
                 self?.showNotificationPermissionDeniedAlert()
             }
         }
     }
 
-    private func updateNotificationsButton() {
-        let enabled = notificationManager.isEnabled
+    private func updateNotificationsButton(enabled: Bool? = nil) {
+        let enabled = enabled ?? notificationManager.isEnabled
         navigationItem.rightBarButtonItem?.image = UIImage(
             systemName: enabled ? "bell.fill" : "bell"
         )
