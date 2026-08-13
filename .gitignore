@@ -21,3 +21,10 @@ Pods/
 Carthage/Build/
 # Developer-specific Apple code signing
 CovidAPI/Config/Signing.local.xcconfig
+notification-backend.sqlite3
+notification-backend.sqlite3-shm
+notification-backend.sqlite3-wal
+backend/.env.staging
+backend/secrets/
+__pycache__/
+*.pyc

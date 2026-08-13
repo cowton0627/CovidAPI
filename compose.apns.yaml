@@ -1,0 +1,15 @@
+services:
+  worker:
+    environment:
+      PUSH_DISPATCH_ENABLED: "true"
+      APNS_ENVIRONMENT: ${APNS_ENVIRONMENT:-sandbox}
+      APNS_KEY_ID: ${APNS_KEY_ID:?set APNS_KEY_ID}
+      APNS_TEAM_ID: ${APNS_TEAM_ID:?set APNS_TEAM_ID}
+      APNS_TOPIC: ${APNS_TOPIC:?set APNS_TOPIC}
+      APNS_PRIVATE_KEY_FILE: /run/secrets/apns_private_key
+    secrets:
+      - apns_private_key
+
+secrets:
+  apns_private_key:
+    file: ${APNS_PRIVATE_KEY_FILE:?set APNS_PRIVATE_KEY_FILE}

@@ -2,9 +2,9 @@
 
 ## 目前狀態
 
-更新日期：2026-08-07
+更新日期：2026-08-11
 
-資料層重構、離線支援、地圖效能、UI tests、無障礙、未分級說明、地區收藏與 app 內新疫情通知均已完成。CI Simulator 建立流程也已修正；本機 `main` 與 `origin/main` 同步。
+資料層重構、離線支援、地圖效能、UI tests、無障礙、未分級說明、地區收藏、app 內通知與通知後端核心均已完成。CI Simulator 建立流程也已修正。
 
 ## 本次完成
 
@@ -44,9 +44,14 @@
 - 首頁空結果畫面加入「重設檢視條件」按鈕，避免使用者需要重新開啟選單。
 - 地圖收藏選單加入「重設檢視條件」，可恢復全部疫情等級與收藏標記。
 - 地圖 geocoding 優先採用 CDC `areaDesc`，修正特殊 Unicode headline 導致加拿大狂犬病定位錯誤。
+- 實作通知後端核心：裝置註冊／偏好／撤銷 API、SQLite migration、CDC schema 驗證與快照去重、收藏地區 delivery queue、APNs JWT 與 HTTP/2 dispatch、失效 token 清理及指數退避。
+- 加入零第三方套件的後端單元測試，並納入 GitHub Actions。
+- 加入 provider-neutral staging 容器：API health check、加密 volume 掛載點、CDC 週期 worker，以及需明確套用的 APNs sandbox dispatch override。
 
 ## 驗證結果
 
+- 通知後端 7 項單元測試通過；實際 CDC dry-run 成功解析 83 筆資料且未建立 delivery。
+- 本機 staging API 驗證 `/healthz` 回傳 200、未授權註冊回傳 401、裝置註冊與偏好更新均回傳 204。
 - iPhone 15、iOS 17.5 Simulator build 成功。
 - 15 項單元測試全部通過，0 failures：
   - 疫情等級判定採用最高匹配等級。
@@ -103,4 +108,6 @@
 
 ## 下一步
 
-1. 若需要完全即時通知，依 `docs/notification-backend.md` 實作後端定期抓取 CDC 資料與 APNs 推播服務。
+1. 選定 staging hosting，部署既有 container、持久化 volume 與 secret manager，注入測試 APNs 憑證。
+2. 依 `docs/notification-backend-runbook.md` 測試裝置註冊與 staging APNs 端到端驗證。
+3. iOS app 串接裝置 token 註冊與收藏偏好同步 API，再進行 production canary。

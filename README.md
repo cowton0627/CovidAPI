@@ -116,6 +116,9 @@ xcodebuild test \
 - [x] 收藏地區管理頁
 - [x] 收藏地區的新疫情通知（app 更新資料時偵測）
 - [x] UI tests 與 VoiceOver accessibility audit
+- [x] 通知後端核心（裝置 API、CDC 同步、SQLite queue、APNs dispatch）
+
+通知後端的本機執行方式、環境變數與排程指令見 [`backend/README.md`](backend/README.md)。正式上線仍需建立 hosting、managed database／volume、secret manager 與 APNs 憑證。
 
 ## 資料來源
 
